@@ -1,0 +1,55 @@
+# ---- Unity (cache/build) ----
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+[Uu]ser[Ss]ettings/
+
+# Generated project/IDE files
+*.csproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.unityproj
+
+# IDE folders
+.idea/
+.vs/
+# Keep .vscode if you want workspace settings in Git; otherwise ignore it:
+#.vscode/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Unity Collaborate (if present)
+.collab/
+
+# Addressables & asset pipeline (safe to ignore generated state)
+[Aa]ssets/AddressableAssetsData/*/addressables_content_state.bin
+[Aa]ssets/**/AddressablesBuildTEP.json
+
+# TextMeshPro generated fallback assets (recreatable)
+[Aa]ssets/TextMesh Pro/Resources/Fonts & Materials/*_fallback.asset
+
+# Crash/diagnostics
+sysinfo.txt
+
+# ---- Keep these tracked (for clarity) ----
+#! Assets/
+#! ProjectSettings/
+#! Packages/
+#! .gitignore
+#! .gitattributes
