@@ -8,15 +8,12 @@ namespace Units
         public int MaxHp { get; private set; }
         public int CurrentHp { get; private set; }
 
-        private CircleFillOverlay _fillOverlay;
-
         public event Action OnDied;
 
-        public HealthTracker(int initMaxHp, CircleFillOverlay circleFillOverlay)
+        public HealthTracker(int initMaxHp)
         {
             MaxHp = initMaxHp;
             CurrentHp = initMaxHp;
-            _fillOverlay = circleFillOverlay;
         }
 
 
@@ -30,10 +27,6 @@ namespace Units
                 percentageHealth = 0;
             }
 
-            if (_fillOverlay != null)
-            {
-                _fillOverlay.SetFill(percentageHealth);
-            }
         }
 
         public bool IsDead()
@@ -45,6 +38,11 @@ namespace Units
             }
 
             return false;
+        }
+
+        public float GetPercentageHealth()
+        {
+            return CurrentHp / (float)MaxHp;
         }
     }
 }

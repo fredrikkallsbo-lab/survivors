@@ -1,4 +1,5 @@
-﻿using Battlefield;
+﻿using System.Runtime.CompilerServices;
+using Battlefield;
 using Battlefield.GameMechanics.Combat.AbilityModifying;
 using Units.Abilities.AbilityManagement.AbilityGeneral;
 using UnityEngine;
@@ -62,37 +63,22 @@ namespace Units.Abilities
         
         public void Attack()
         {
-            Debug.Log("Attack projectile");
-            float closestDistance = Mathf.Infinity;
-            Collider2D closestCollider = null;
-            
-            Collider2D[] colliders = new Collider2D[100];
-            var size = Physics2D.OverlapCircleNonAlloc(_sourceTransform.position, _radius, colliders, _layerMask);
-            for (int i = 0; i < size; i++)
-            {
-                Collider2D collider = colliders[i];
-                if (closestDistance > Vector2.Distance(collider.transform.position, _sourceTransform.position)
-                     && collider.GetComponent<ITargetable>().GetFaction() != _sourceFaction)
-                {
-                    closestDistance = Vector2.Distance(collider.transform.position, _sourceTransform.position);
-                    closestCollider = collider;
-                }
-            }
 
-            if (closestCollider != null)
+            Unit targetUnit = _battlefieldInterface.GetClosestUnitOfFaction(Faction.Enemy, _sourceTransform, 100, _layerMask);
+            if (targetUnit != null)
             {
-                Debug.Log("Attacking: "+ closestCollider.GetComponent<ITargetable>().GetFaction() + " from: " + _sourceFaction);
-                _battlefieldInterface.RegisterProjectile(SendProjectile(closestCollider.GetComponent<ITargetable>()));
+                Debug.Log("Projectile attack");
+
+                SendProjectile(targetUnit);
             }
         }
 
-        private TargetProjectile SendProjectile(ITargetable target)
+        private TargetProjectile SendProjectile(Unit targetUnit)
         {
             Vector3 spawnPos = _sourceTransform.position;        
-            Quaternion spawnRot = _sourceTransform.rotation;
 
-            GameObject projectile = Object.Instantiate(_projectilePrefab, spawnPos, spawnRot);
-            projectile.GetComponent<TargetProjectile>().Init(_baseDamage, 1, target, _battlefieldInterface);
+            GameObject projectile = Object.Instantiate(_projectilePrefab, spawnPos, Quaternion.identity);
+            projectile.GetComponent<TargetProjectile>().Init(_baseDamage, 1, targetUnit, _battlefieldInterface);
             return projectile.gameObject.GetComponent<TargetProjectile>();
         }
     }

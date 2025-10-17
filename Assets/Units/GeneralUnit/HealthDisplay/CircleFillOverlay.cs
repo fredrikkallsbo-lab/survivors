@@ -1,14 +1,14 @@
+using Units.HealthDisplay;
 using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(CircleCollider2D))]
-public class CircleFillOverlay : MonoBehaviour
+public class CircleFillOverlay : MonoBehaviour, IHealthDisplayer
 {
-    [Header("Visuals")]
-    [SerializeField] private Sprite circleSprite;
-    [SerializeField] private Color fillColor = Color.green;
-    [SerializeField] private float sortingOrder = 10f; // over sprites
-    [SerializeField] private float circleSize;
+    private Sprite circleSprite;
+    private Color fillColor = new Color(1f, 0.35f, 0.1f, 1f);
+    private float sortingOrder = 10f; 
+    private float circleSize = 3;
     
 
     private CircleCollider2D circle;
@@ -77,5 +77,10 @@ public class CircleFillOverlay : MonoBehaviour
         rt.localPosition = Vector3.zero;
         rt.localRotation = Quaternion.identity;
         rt.localScale = Vector3.one;
+    }
+
+    public void SetSprite(Sprite sprite)
+    {
+        circleSprite = sprite;
     }
 }

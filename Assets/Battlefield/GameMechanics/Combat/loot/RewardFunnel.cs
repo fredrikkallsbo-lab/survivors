@@ -5,7 +5,6 @@ namespace Battlefield.GameMechanics.Combat.loot
 {
     public class RewardFunnel
     {
-        [SerializeField] private PlayerUnit _player;
 
 
         public void AddExperience(int i)

@@ -14,11 +14,11 @@ namespace Units.Abilities
         Vector3? _finalDestination; 
 
 
-        public void Init(int damage, float speed, ITargetable target, BattlefieldInterfaceForUnit battlefieldController)
+        public void Init(int damage, float speed, Unit target, BattlefieldInterfaceForUnit battlefieldController)
         {
             _damage = damage;
             _speed = speed;
-            _targetUnit = target.GetUnit();
+            _targetUnit = target;
             _battlefieldController = battlefieldController;
         }
 
@@ -56,6 +56,7 @@ namespace Units.Abilities
                 else
                 {
                     // Target still alive: trigger the impact logic
+                    Debug.Log("Trigger projectile impact");
                     TriggerProjectileImpact();
                 }
             }

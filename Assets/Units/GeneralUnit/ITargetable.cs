@@ -11,6 +11,5 @@ namespace Units
 
         public Unit GetUnit();
         
-        Object Handle { get; }
     }
 }

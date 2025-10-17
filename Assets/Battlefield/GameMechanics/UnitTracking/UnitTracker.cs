@@ -10,13 +10,7 @@ namespace Battlefield
     public class UnitTracker : MonoBehaviour
     {
         private static List<Unit> _units = new();
-        private static PlayerUnit _playerUnit;
-        
-        private void Awake()
-        {
-            _playerUnit = FindObjectOfType<PlayerUnit>();
-
-        }
+      
         
         public void Register(Unit unit)
         {
@@ -26,7 +20,6 @@ namespace Battlefield
         public void Unregister(Unit unit)
         {
             _units.Remove(unit);
-            _playerUnit.RefreshAbilityModifierSet();
             CheckWinOrLose();
         }
 

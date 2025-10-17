@@ -4,44 +4,48 @@ using Battlefield.GameMechanics;
 using Battlefield.GameMechanics.Combat.AbilityModifying;
 using Units.Abilities;
 using Units.Abilities.AbilityManagement;
+using Units.HealthDisplay;
 using UnityEngine;
 
 namespace Units
 {
-    
-    
-    public sealed class Unit
+    public sealed class Unit : MonoBehaviour
     {
-        private readonly IAbilityModifierSetProducer _iAbilityModifierSetProducer;
-        private readonly HealthTracker _healthTracker;
+        private IAbilityModifierSetProducer _iAbilityModifierSetProducer;
+        private HealthTracker _healthTracker;
 
-        public readonly Faction Faction;
+        public Faction Faction;
 
-        private readonly BattlefieldInterfaceForUnit _battlefieldInterfaceForUnit;
+        private BattlefieldInterfaceForUnit _battlefieldInterfaceForUnit;
 
         private AbilityManager _abilityManager;
-        
+
         private Transform _unitTransform;
 
-        public Unit(int health, 
+        private IHealthDisplayer _healthDisplayer;
+
+        public void Init(int health,
             IAbilityModifierSetProducer abilityModifierSetProducer,
-            Faction faction, 
+            Faction faction,
             BattlefieldInterfaceForUnit battlefieldInterfaceForUnit,
             AbilityManager abilityManager,
-            CircleFillOverlay fillOverlay,
-            Transform unitTransform)
+            Transform unitTransform,
+            IHealthDisplayer healthDisplayer)
         {
-            _healthTracker = new HealthTracker(health, fillOverlay);
+            _healthTracker = new HealthTracker(health);
             _abilityManager = abilityManager;
             _iAbilityModifierSetProducer = abilityModifierSetProducer;
             _battlefieldInterfaceForUnit = battlefieldInterfaceForUnit;
             Faction = faction;
             _unitTransform = unitTransform;
-            
+            _healthDisplayer = healthDisplayer;
+
             _abilityManager.Init(_iAbilityModifierSetProducer.GetAbilityModifierSet());
 
             _battlefieldInterfaceForUnit.RegisterSpawn(this);
-            _healthTracker.OnDied += HandleDeath; 
+            _healthTracker.OnDied += HandleDeath;
+            
+            _abilityManager.Init(_iAbilityModifierSetProducer.GetAbilityModifierSet());
         }
 
 
@@ -52,26 +56,23 @@ namespace Units
             _abilityManager.RefreshAbilityModifierSet(_iAbilityModifierSetProducer.GetAbilityModifierSet());
         }
 
-        
-        
-        public bool TakeDamage(int damage)
+        public void TakeDamage(int damage)
         {
+            
             _healthTracker.TakeDamage(damage);
-            return _healthTracker.IsDead();
+            _healthDisplayer.SetFill(_healthTracker.GetPercentageHealth());
+            if (_healthTracker.IsDead())
+            {
+                _battlefieldInterfaceForUnit.RegisterDeath(this);
+            }
         }
 
-
-        public void ManualOnEnable(AbilityModifierSet abilityModifierSet)
-        {
-            //måste initta alla spells
-            _abilityManager.Init(abilityModifierSet);
-        }
-        public void ManualOnDisable()
+        public void OnDisable()
         {
             _abilityManager.ManualOnDisable();
         }
 
-        public Vector2 GetPosition()
+        public Vector3 GetPosition()
         {
             return _unitTransform.position;
         }
