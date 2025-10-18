@@ -1,7 +1,9 @@
-﻿using Battlefield;
+﻿using System.Collections.Generic;
+using Battlefield;
 using Battlefield.GameMechanics.Combat.AbilityModifying;
 using Units.Abilities.AbilityManagement;
 using Units.HealthDisplay;
+using Units.Resources;
 using UnityEngine;
 
 namespace Units
@@ -20,6 +22,10 @@ namespace Units
         private Transform _unitTransform;
 
         private IHealthDisplayer _healthDisplayer;
+        
+        private UnitResourceManager _unitResourceManager;
+        
+        private TriggerManager  _triggerManager;
 
         public void Init(int health,
             IAbilityModifierSetProducer abilityModifierSetProducer,
@@ -27,7 +33,9 @@ namespace Units
             BattlefieldInterfaceForUnit battlefieldInterfaceForUnit,
             AbilityManager abilityManager,
             Transform unitTransform,
-            IHealthDisplayer healthDisplayer)
+            IHealthDisplayer healthDisplayer,
+            UnitResourceManager unitResourceManager,
+            TriggerManager triggerManager)
         {
             _healthTracker = new HealthTracker(health);
             _abilityManager = abilityManager;
@@ -36,8 +44,8 @@ namespace Units
             Faction = faction;
             _unitTransform = unitTransform;
             _healthDisplayer = healthDisplayer;
-
-            _abilityManager.Init(_iAbilityModifierSetProducer.GetAbilityModifierSet());
+            _unitResourceManager = unitResourceManager;
+            _triggerManager = triggerManager;
 
             _battlefieldInterfaceForUnit.RegisterSpawn(this);
             _healthTracker.OnDied += HandleDeath;

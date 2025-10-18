@@ -2,7 +2,6 @@
 using Battlefield.GameMechanics;
 using Battlefield.GameMechanics.Combat.loot;
 using Units;
-using Units.Player;
 using UnityEngine;
 
 namespace Battlefield

@@ -1,4 +1,4 @@
-﻿using Units.Player;
+﻿
 using UnityEngine;
 
 namespace Battlefield.GameMechanics.Combat.loot

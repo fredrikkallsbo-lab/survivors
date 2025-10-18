@@ -1,6 +1,6 @@
-﻿using Units;
+﻿using System.Collections.Generic;
+using Units;
 using Units.Abilities;
-using Units.Player;
 using UnityEngine;
 
 namespace Battlefield.GameMechanics.Combat.BattlefieldController
@@ -9,8 +9,9 @@ namespace Battlefield.GameMechanics.Combat.BattlefieldController
     {
         [SerializeField] private UnitTracker unitTracker;
         
+        
         private BattlefieldInterfaceForUnit _battlefieldInterfaceForUnit;
-
+        private readonly IEventBus  _eventBus = new EventBus();
 
         public void RegisterUnit(Unit unit)
         {
@@ -28,6 +29,11 @@ namespace Battlefield.GameMechanics.Combat.BattlefieldController
         public BattlefieldInterfaceForUnit GetBattlefieldUnitInterface()
         {
            return new BattlefieldInterfaceForUnit(this);
+        }
+
+        public IEventBus GetEventBus()
+        {
+            return _eventBus;
         }
 
     }

@@ -6,6 +6,7 @@ using Units.Abilities;
 using Units.Abilities.AbilityManagement;
 using Units.Abilities.AbilityManagement.AbilityGeneral;
 using Units.HealthDisplay;
+using Units.Resources;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -100,9 +101,8 @@ namespace Battlefield
 
             var _abilityManager = new AbilityManager(abilites);
 
-
-            //CircleFillOverlay circle = enemyUnit.gameObject.AddComponent<CircleFillOverlay>();
-            // circle.SetSprite(circleSprite);
+            UnitResourceManager unitResourceManager = new UnitResourceManager();
+   
             enemyUnit.Init(
                 10,
                 new DefaultAbilityModifierSetProducer(),
@@ -110,7 +110,9 @@ namespace Battlefield
                 _battlefieldInterfaceForUnit,
                 _abilityManager,
                 enemyUnit.transform,
-                new DummyHealthDIsplayer()
+                new DummyHealthDIsplayer(),
+                unitResourceManager,
+                new TriggerManager()
             );
         }
 

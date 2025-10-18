@@ -1,18 +1,18 @@
-﻿using System.Runtime.CompilerServices;
-using Battlefield;
+﻿using Battlefield;
 using Battlefield.GameMechanics.Combat.AbilityModifying;
+using Units.Abilities.AbilityManagement;
 using Units.Abilities.AbilityManagement.AbilityGeneral;
+using Units.Resources;
 using UnityEngine;
 
 namespace Units.Abilities
 {
-    public class SingleTargetProjectileAbility : IAbilityEffect
+    public class SingleTargetClosestAbility: IAbilityEffect
     {
-        private GameObject _projectilePrefab;
         
         private float _radius;
         int _layerMask;
-        private Faction _sourceFaction;
+        private Faction _targetFaction;
         
         private System.Action _cancel;
         
@@ -27,8 +27,8 @@ namespace Units.Abilities
         private BattlefieldInterfaceForUnit _battlefieldInterface;
         
         
-        public SingleTargetProjectileAbility(Transform sourceTransform, 
-            Faction sourceFaction, 
+        public SingleTargetClosestAbility(Transform sourceTransform, 
+            Faction targetFaction, 
             int baseDamage, 
             Scheduler scheduler,
             float radius,
@@ -36,19 +36,24 @@ namespace Units.Abilities
             BattlefieldInterfaceForUnit battlefieldInterface)
         {
             _sourceTransform = sourceTransform;
-            _sourceFaction = sourceFaction;
+            _targetFaction = targetFaction;
             _baseDamage = baseDamage;
             _scheduler = scheduler;
             _radius = radius;
-            _projectilePrefab = Resources.Load<GameObject>("Prefabs/Projectile");
             _layerMask = layerMask;
             _battlefieldInterface = battlefieldInterface;
         }
-        
+
         public void Init(AbilityModifierSet abilityModifierSet)
         {
+            Debug.Log("SingleTargetClosestAbility.Init|");
             _abilityModifierSet = abilityModifierSet;
             _cancel = _scheduler.Every(1.0, Attack);
+        }
+
+        public void ManualOnDisable()
+        {
+            _cancel?.Invoke();
         }
 
         public void RefreshAbilityModifierSet(AbilityModifierSet abilityModifierSet)
@@ -56,30 +61,14 @@ namespace Units.Abilities
             _abilityModifierSet = abilityModifierSet;
         }
 
-        public void ManualOnDisable()
-        {
-            _cancel?.Invoke();
-        }
-        
         public void Attack()
         {
-
-            Unit targetUnit = _battlefieldInterface.GetClosestUnitOfFaction(Faction.Enemy, _sourceTransform, 100, _layerMask);
+            Unit targetUnit =
+                _battlefieldInterface.GetClosestUnitOfFaction(_targetFaction, _sourceTransform, _radius, _layerMask);
             if (targetUnit != null)
             {
-                Debug.Log("Projectile attack");
-
-                SendProjectile(targetUnit);
+                targetUnit.TakeDamage(_baseDamage + _abilityModifierSet.Levels);
             }
-        }
-
-        private TargetProjectile SendProjectile(Unit targetUnit)
-        {
-            Vector3 spawnPos = _sourceTransform.position;        
-
-            GameObject projectile = Object.Instantiate(_projectilePrefab, spawnPos, Quaternion.identity);
-            projectile.GetComponent<TargetProjectile>().Init(_baseDamage, 2.5f, targetUnit, _battlefieldInterface);
-            return projectile.gameObject.GetComponent<TargetProjectile>();
         }
     }
 }
