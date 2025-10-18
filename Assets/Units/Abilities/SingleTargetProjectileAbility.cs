@@ -78,7 +78,7 @@ namespace Units.Abilities
             Vector3 spawnPos = _sourceTransform.position;        
 
             GameObject projectile = Object.Instantiate(_projectilePrefab, spawnPos, Quaternion.identity);
-            projectile.GetComponent<TargetProjectile>().Init(_baseDamage, 1, targetUnit, _battlefieldInterface);
+            projectile.GetComponent<TargetProjectile>().Init(_baseDamage, 2.5f, targetUnit, _battlefieldInterface);
             return projectile.gameObject.GetComponent<TargetProjectile>();
         }
     }
