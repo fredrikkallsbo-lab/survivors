@@ -9,13 +9,18 @@ namespace Units.Abilities
         [SerializeField] private AnimationCurve scaleCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
         [SerializeField] private AnimationCurve alphaCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
 
-        [Header("Visuals")] [SerializeField] private Color color = new Color(1f, 0.2f, 0.05f, 1f); // red-orange
+        [Header("Visuals")] [SerializeField] private Color tintColor = Color.white;
+        [SerializeField] private Color innerGlowColor = new Color(1f, 0.86f, 0.35f, 1f);
+        [SerializeField] private Color outerGlowColor = new Color(0.66f, 0.07f, 0.01f, 1f);
+        [SerializeField, Range(0.05f, 0.9f)] private float ringThickness = 0.45f;
+        [SerializeField, Range(0.01f, 0.4f)] private float edgeFeather = 0.18f;
         [SerializeField] private Sprite circleSprite; // can be generated at runtime
         [SerializeField] private int orderInLayer = 10;
 
         private SpriteRenderer sr;
         private float t;
         private float targetDiameter;
+        private Color currentTint;
 
         void Awake()
         {
@@ -32,6 +37,8 @@ namespace Units.Abilities
             // Fix pink (missing shader)
             sr.sharedMaterial = null; // falls back to default Sprite shader
             sr.sortingOrder = orderInLayer;
+            currentTint = tintColor;
+            sr.color = currentTint;
         }
 
         /// <summary>
@@ -42,7 +49,7 @@ namespace Units.Abilities
             transform.position = pos;
             targetDiameter = radius * 2f;
             t = 0f;
-            if (overrideColor.HasValue) color = overrideColor.Value;
+            currentTint = overrideColor ?? tintColor;
             if (overrideDuration.HasValue) duration = overrideDuration.Value;
 
             // start at zero scale (in world units)
@@ -86,12 +93,11 @@ namespace Units.Abilities
             float spriteDiameter = sr.sprite.bounds.size.x;
             float scale = spriteDiameter > 0f ? (worldDiameter / spriteDiameter) : 1f;
             transform.localScale = Vector3.one * scale;
-            sr.color = color;
         }
 
         private void SetColorAlpha(float a)
         {
-            var c = color;
+            var c = currentTint;
             c.a = a;
             sr.color = c;
         }
@@ -102,26 +108,43 @@ namespace Units.Abilities
             var tex = new Texture2D(size, size, TextureFormat.ARGB32, false);
             var pixels = new Color32[size * size];
             Vector2 center = new(size * 0.5f, size * 0.5f);
-            float r = size * 0.5f;
-            float r2 = r * r;
+            float radius = size * 0.5f;
+
+            float innerEdge = Mathf.Clamp01(1f - ringThickness);
+            float innerFadeStart = Mathf.Clamp01(innerEdge - edgeFeather);
+            float outerFadeStart = Mathf.Clamp01(1f - edgeFeather);
 
             for (int y = 0; y < size; y++)
             {
                 int row = y * size;
-                float dy = y - center.y;
+                float dy = (y + 0.5f) - center.y;
                 for (int x = 0; x < size; x++)
                 {
-                    float dx = x - center.x;
-                    float d2 = dx * dx + dy * dy;
-                    float edge = r - 0.75f; // soft edge width ~1px
-                    float alpha = Mathf.Clamp01((edge * edge - (d2 - (r2 - edge * edge))) / (edge * edge));
-                    pixels[row + x] = new Color(1f, 1f, 1f, d2 <= r2 ? alpha : 0f);
+                    float dx = (x + 0.5f) - center.x;
+                    float dist = Mathf.Sqrt(dx * dx + dy * dy);
+                    float normalized = Mathf.Clamp01(dist / radius);
+
+                    float inner = Mathf.Clamp01(Mathf.InverseLerp(innerFadeStart, innerEdge, normalized));
+                    float outer = Mathf.Clamp01(1f - Mathf.InverseLerp(outerFadeStart, 1f, normalized));
+                    float alpha = Mathf.Clamp01(inner * outer);
+
+                    if (normalized >= 1f)
+                    {
+                        pixels[row + x] = new Color(0f, 0f, 0f, 0f);
+                        continue;
+                    }
+
+                    float glowMix = Mathf.Pow(normalized, 0.75f);
+                    Color pixelColor = Color.Lerp(innerGlowColor, outerGlowColor, glowMix);
+                    pixelColor.a *= alpha;
+                    pixels[row + x] = pixelColor;
                 }
             }
 
             tex.SetPixels32(pixels);
             tex.Apply();
             tex.filterMode = FilterMode.Bilinear;
+            tex.wrapMode = TextureWrapMode.Clamp;
 
             return Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), size);
         }
