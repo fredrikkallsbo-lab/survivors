@@ -19,7 +19,7 @@ namespace Units.Anvil
 
             Vector3 pos = transform.position;   // << from caster/player, not mouse
             var circle = Instantiate(_expandingCirclePrefab, pos, Quaternion.identity);
-            circle.Play(pos, radius: 2f);
+            
         }
     }
 }

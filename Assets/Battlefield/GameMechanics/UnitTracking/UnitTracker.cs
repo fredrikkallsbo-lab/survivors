@@ -19,33 +19,6 @@ namespace Battlefield
         public void Unregister(Unit unit)
         {
             _units.Remove(unit);
-            CheckWinOrLose();
-        }
-
-        public void CheckWinOrLose()
-        {
-            bool playerIsAlive = false;
-            bool enemyIsAlive = false;
-
-            foreach (var unit in _units)
-            {
-                if (unit.Faction == Faction.Player)
-                {
-                    playerIsAlive = true;
-                }
-                else if(unit.Faction == Faction.Enemy)
-                {
-                    enemyIsAlive = true;
-                }
-            }
-
-            if (!playerIsAlive)
-            {
-                Debug.Log("DEFEAT");
-            }else if (!enemyIsAlive)
-            {
-                Debug.Log("VICTORY");
-            }
         }
         
     }

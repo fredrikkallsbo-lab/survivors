@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Battlefield.GameMechanics.Combat.loot;
 using Units;
 using Units.Abilities;
 using UnityEngine;
@@ -12,6 +13,16 @@ namespace Battlefield.GameMechanics.Combat.BattlefieldController
         
         private BattlefieldInterfaceForUnit _battlefieldInterfaceForUnit;
         private readonly IEventBus  _eventBus = new EventBus();
+        private Wanderer Wanderer { get; set; }
+        private RewardFunnel _rewardFunnel;
+
+    
+
+        private void Awake()
+        {
+            Wanderer = new Wanderer();
+            _rewardFunnel = new RewardFunnel(Wanderer);
+        }
 
         public void RegisterUnit(Unit unit)
         {
@@ -21,7 +32,7 @@ namespace Battlefield.GameMechanics.Combat.BattlefieldController
         public void UnregisterUnit(Unit unit)
         {
             unitTracker.Unregister(unit);
-            unitTracker.CheckWinOrLose();
+            _rewardFunnel.AddExperience(1);
             Destroy(unit.gameObject);
         }
 

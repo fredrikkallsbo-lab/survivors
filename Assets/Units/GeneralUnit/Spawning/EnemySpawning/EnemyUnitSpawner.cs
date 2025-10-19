@@ -72,13 +72,14 @@ namespace Battlefield
         public void SpawnAt(Vector3 position) // NEW: position-aware entry point
         {
             SpawnEnemy(position);
-            _enemiesSpawned++;
             _spawnIntensity++; // if you want to count intensity per unit
         }
 
         private void SpawnEnemy(Vector3 position) // changed to take a position
         {
             GameObject enemyObject = Instantiate(enemyPrefab, position, Quaternion.identity);
+            enemyObject.name = "Enemy" + _enemiesSpawned;
+            _enemiesSpawned++;
             Unit enemyUnit = enemyObject.AddComponent<Unit>();
             InitEnemy(enemyUnit);
         }
