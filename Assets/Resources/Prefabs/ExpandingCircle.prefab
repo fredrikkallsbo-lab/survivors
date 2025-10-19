@@ -148,7 +148,11 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  color: {r: 0.9339623, g: 0.40439308, b: 0.12775902, a: 1}
+  tintColor: {r: 1, g: 1, b: 1, a: 1}
+  innerGlowColor: {r: 1, g: 0.86, b: 0.35, a: 1}
+  outerGlowColor: {r: 0.66, g: 0.07, b: 0.01, a: 1}
+  ringThickness: 0.45
+  edgeFeather: 0.18
   circleSprite: {fileID: 0}
   orderInLayer: 10
 --- !u!58 &6524745792925529983
