@@ -14,7 +14,6 @@ namespace Units.HealthDisplay
         private Text _healthText;
         private GameObject _canvasRoot;
         private float _currentFill = 1f;
-        private float _maxFillWidth;
 
         private void Awake()
         {
@@ -24,20 +23,12 @@ namespace Units.HealthDisplay
 
         public void SetFill(float percent)
         {
-            if (_canvasRoot == null)
-            {
-                CreateUi();
-            }
             _currentFill = Mathf.Clamp01(percent);
             UpdateVisual(_currentFill);
         }
 
         public void SetMaxHealth(int health)
         {
-            if (_canvasRoot == null)
-            {
-                CreateUi();
-            }
             maxHealth = Mathf.Max(1, health);
             UpdateVisual(_currentFill);
         }
@@ -78,14 +69,10 @@ namespace Units.HealthDisplay
             var fill = new GameObject("HealthBarFill");
             fill.transform.SetParent(background.transform, false);
             var fillRect = fill.AddComponent<RectTransform>();
-            fillRect.anchorMin = new Vector2(0f, 0.5f);
-            fillRect.anchorMax = new Vector2(0f, 0.5f);
-            fillRect.pivot = new Vector2(0f, 0.5f);
-            float inset = 4f;
-            float height = Mathf.Max(0f, barSize.y - inset * 2f);
-            _maxFillWidth = Mathf.Max(0f, barSize.x - inset * 2f);
-            fillRect.anchoredPosition = new Vector2(inset, 0f);
-            fillRect.sizeDelta = new Vector2(_maxFillWidth, height);
+            fillRect.anchorMin = new Vector2(0f, 0f);
+            fillRect.anchorMax = new Vector2(1f, 1f);
+            fillRect.offsetMin = new Vector2(4f, 4f);
+            fillRect.offsetMax = new Vector2(-4f, -4f);
             _fillImage = fill.AddComponent<Image>();
             _fillImage.color = Color.green;
             _fillImage.type = Image.Type.Filled;
@@ -104,24 +91,19 @@ namespace Units.HealthDisplay
             _healthText = textGo.AddComponent<Text>();
             _healthText.alignment = TextAnchor.MiddleCenter;
             _healthText.color = Color.white;
-            _healthText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            //_healthText.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
         }
 
         private void UpdateVisual(float fillAmount)
         {
-            if (_fillImage == null)
+            if (_fillImage == null || _healthText == null)
             {
                 return;
             }
 
-            float clamped = Mathf.Clamp01(fillAmount);
-            _fillImage.fillAmount = clamped;
-            _fillImage.enabled = clamped > 0f;
-            if (_healthText != null)
-            {
-                int currentHealth = Mathf.RoundToInt(maxHealth * clamped);
-                _healthText.text = $"{currentHealth}/{maxHealth}";
-            }
+            _fillImage.fillAmount = fillAmount;
+            int currentHealth = Mathf.RoundToInt(maxHealth * fillAmount);
+            _healthText.text = $"{currentHealth}/{maxHealth}";
         }
 
         private void OnDestroy()
