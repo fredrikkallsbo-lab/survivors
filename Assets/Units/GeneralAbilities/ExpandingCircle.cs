@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Units.Abilities
 {
@@ -21,12 +22,19 @@ namespace Units.Abilities
         private float t;
         private float targetDiameter;
         private Color currentTint;
+        private readonly HashSet<Collider2D> _alreadyHit = new();
+
+        private CircleCollider2D trigger;
 
         void Awake()
         {
             sr = GetComponent<SpriteRenderer>();
             if (sr == null)
                 sr = GetComponentInChildren<SpriteRenderer>();
+
+            trigger = GetComponent<CircleCollider2D>();
+            if (trigger == null)
+                trigger = GetComponentInChildren<CircleCollider2D>();
 
             // Prefer an already-assigned sprite; otherwise generate one
             if (circleSprite == null)
@@ -51,6 +59,10 @@ namespace Units.Abilities
             t = 0f;
             currentTint = overrideColor ?? tintColor;
             if (overrideDuration.HasValue) duration = overrideDuration.Value;
+
+            _alreadyHit.Clear();
+            if (trigger != null)
+                trigger.enabled = true;
 
             // start at zero scale (in world units)
             SetScaleForDiameter(0.0001f); // tiny, not zero to avoid NaNs
@@ -85,6 +97,11 @@ namespace Units.Abilities
                 enabled = false;
                 gameObject.SetActive(false); // ready for pooling reuse
             }
+        }
+
+        void OnDisable()
+        {
+            _alreadyHit.Clear();
         }
 
         private void SetScaleForDiameter(float worldDiameter)
@@ -151,10 +168,23 @@ namespace Units.Abilities
         
         void OnTriggerEnter2D(Collider2D other)
         {
+            TryRegisterHit(other);
+        }
+
+        void OnTriggerStay2D(Collider2D other)
+        {
+            TryRegisterHit(other);
+        }
+
+        private void TryRegisterHit(Collider2D other)
+        {
             if (other.CompareTag("Enemy"))
             {
-                Debug.Log($"Hit enemy: {other.name}");
-                // Example: other.GetComponent<Enemy>().TakeDamage(10);
+                if (_alreadyHit.Add(other))
+                {
+                    Debug.Log($"Hit enemy: {other.name}");
+                    // Example: other.GetComponent<Enemy>().TakeDamage(10);
+                }
             }
         }
     }
