@@ -27,10 +27,12 @@ namespace Units
 
         [SerializeField] private ExpandingCircle expandingCirclePrefab;
 
+        private PlayerScreenHealthBar _playerScreenHealthBar;
         private void Awake()
         {
             enemyUnitSpawner.Init(scheduler, battlefieldController.GetBattlefieldUnitInterface());
-
+            
+            _playerScreenHealthBar = FindObjectOfType<PlayerScreenHealthBar>();
             GameObject player = Instantiate(playerUnitPrefab, new Vector3(0, 0, 0), Quaternion.identity);
             Unit playerUnit = player.AddComponent<Unit>();
             InitPlayer(playerUnit);
@@ -67,7 +69,7 @@ namespace Units
             Ability magmaWave = new Ability(effectMagmaWave);
 
             abilites.Add(anvilStrikeAbility);
-            abilites.Add(magmaWave);
+            //abilites.Add(magmaWave);
 
             var _abilityManager = new AbilityManager(abilites);
             var _wanderer = new Wanderer();
@@ -79,7 +81,7 @@ namespace Units
                 battlefieldController.GetBattlefieldUnitInterface(),
                 _abilityManager,
                 playerUnit.transform,
-                new DummyHealthDIsplayer(),
+                _playerScreenHealthBar,
                 unitResourceManager,
                 triggerManager
             );

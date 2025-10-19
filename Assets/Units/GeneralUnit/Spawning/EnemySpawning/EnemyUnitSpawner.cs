@@ -98,7 +98,7 @@ namespace Battlefield
 
             var singleTargetAbility = new Ability(singleTargetClosestAbility);
             List<Ability> abilites = new List<Ability>();
-            //abilites.Add(singleTargetAbility);
+            abilites.Add(singleTargetAbility);
 
             var _abilityManager = new AbilityManager(abilites);
 
