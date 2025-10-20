@@ -8,6 +8,7 @@ using Units.Abilities.AbilityManagement;
 using Units.Abilities.AbilityManagement.AbilityGeneral;
 using Units.Anvil;
 using Units.Anvil.AnvilAbilities;
+using Units.Death;
 using Units.GeneralUnit.Minion;
 using Units.HealthDisplay;
 using Units.Resources;
@@ -29,7 +30,7 @@ namespace Units
         private PlayerScreenHealthText _playerScreenHealthText;
         private void Awake()
         {
-            enemyUnitSpawner.Init(scheduler, battlefieldController.GetBattlefieldUnitInterface());
+            enemyUnitSpawner.Init(scheduler, battlefieldController.GetBattlefieldUnitInterface(), battlefieldController.GetEventBus());
             
             _playerScreenHealthText = FindObjectOfType<PlayerScreenHealthText>();
             GameObject player = Instantiate(playerUnitPrefab, new Vector3(0, 0, 0), Quaternion.identity);
@@ -74,7 +75,7 @@ namespace Units
             var _wanderer = new Wanderer(playerUnit);
 
             playerUnit.Init(
-                1000,
+                10,
                 _wanderer.CreateAbilityModifierSet(),
                 Faction.Player,
                 battlefieldController.GetBattlefieldUnitInterface(),
@@ -82,8 +83,10 @@ namespace Units
                 playerUnit.transform,
                 _playerScreenHealthText,
                 unitResourceManager,
-                triggerManager
-            );
+                triggerManager,
+                battlefieldController.GetEventBus(),
+                new PlayerDeathEventCreator()
+                );
             battlefieldController.GetBattlefieldUnitInterface().RegisterWanderer(_wanderer);
         }
     }

@@ -5,6 +5,7 @@ using Battlefield.GameMechanics.Combat.BattlefieldController;
 using Units.Abilities;
 using Units.Abilities.AbilityManagement;
 using Units.Abilities.AbilityManagement.AbilityGeneral;
+using Units.Death;
 using Units.HealthDisplay;
 using Units.Resources;
 using UnityEngine;
@@ -53,7 +54,9 @@ namespace Units.GeneralUnit.Minion
                 minionUnit.transform,
                 new DummyHealthDIsplayer(),
                 unitResourceManager,
-                new TriggerManager());
+                new TriggerManager(),
+                _battlefieldController.GetEventBus(),
+                new EnemyUnitDeathEventCreator());
         }
     }
 }

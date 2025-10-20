@@ -5,6 +5,7 @@ using Units;
 using Units.Abilities;
 using Units.Abilities.AbilityManagement;
 using Units.Abilities.AbilityManagement.AbilityGeneral;
+using Units.Death;
 using Units.HealthDisplay;
 using Units.Resources;
 using UnityEngine;
@@ -23,12 +24,15 @@ namespace Battlefield
         private int _spawnIntensity;
 
         private EnemySpawnLayerManager _layerManager;
+        
+        IEventBus _eventBus;
 
-        public void Init(Scheduler scheduler, BattlefieldInterfaceForUnit battlefieldInterfaceForUnit)
+        public void Init(Scheduler scheduler, BattlefieldInterfaceForUnit battlefieldInterfaceForUnit, IEventBus bus)
         {
             _scheduler = scheduler;
             _battlefieldInterfaceForUnit = battlefieldInterfaceForUnit;
-
+            _eventBus = bus;
+            
             var trickleLayer = new SimpleTrickleEnemySpawnLayer();
             trickleLayer.Configure(
                 startDelaySeconds: 2f,
@@ -89,7 +93,7 @@ namespace Battlefield
             var singleTargetClosestAbility = new SingleTargetClosestAbility(
                 transform,
                 Faction.Player,
-                2,
+                1,
                 _scheduler,
                 10,
                 LayerMask.GetMask("Ally"),
@@ -113,7 +117,9 @@ namespace Battlefield
                 enemyUnit.transform,
                 new DummyHealthDIsplayer(),
                 unitResourceManager,
-                new TriggerManager()
+                new TriggerManager(),
+                _eventBus,
+                new EnemyUnitDeathEventCreator()
             );
         }
 

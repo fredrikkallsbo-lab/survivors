@@ -38,7 +38,7 @@ namespace Battlefield
             {
                 Collider2D collider = colliders[i];
                 if (closestDistance > Vector2.Distance(collider.transform.position, sourceTransform.position)
-                     && collider.GetComponent<Unit>().Faction == faction)
+                     && collider.GetComponent<Unit>().faction == faction)
                 {
                     closestDistance = Vector2.Distance(collider.transform.position, sourceTransform.position);
                     closestCollider = collider;

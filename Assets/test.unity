@@ -266,8 +266,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a955ff45bc9007498ba2478e8a6d8e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  barSize: {x: 600, y: 30}
-  barOffset: {x: 0, y: 25}
   maxHealth: 100
   canvasSortingOrder: 100
   uiFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
@@ -302,6 +300,7 @@ GameObject:
   - component: {fileID: 991100470}
   - component: {fileID: 991100473}
   - component: {fileID: 991100472}
+  - component: {fileID: 991100474}
   m_Layer: 0
   m_Name: GameCoordinator
   m_TagString: Untagged
@@ -420,6 +419,22 @@ MonoBehaviour:
   battlefieldController: {fileID: 991100471}
   scheduler: {fileID: 991100466}
   expandingCirclePrefab: {fileID: 2333521061167565512, guid: 9c6f1226747a8e841a4c1756f4299b6f, type: 3}
+--- !u!114 &991100474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991100462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af4ad8586c2f4203bd828f5677844be4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  battlefieldController: {fileID: 991100471}
+  canvasPrefab: {fileID: 0}
+  uiFont: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  fontSize: 36
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
