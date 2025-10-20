@@ -11,7 +11,6 @@ using Units.Anvil.AnvilAbilities;
 using Units.GeneralUnit.Minion;
 using Units.HealthDisplay;
 using Units.Resources;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Units
@@ -27,12 +26,12 @@ namespace Units
 
         [SerializeField] private ExpandingCircle expandingCirclePrefab;
 
-        private PlayerScreenHealthBar _playerScreenHealthBar;
+        private PlayerScreenHealthText _playerScreenHealthText;
         private void Awake()
         {
             enemyUnitSpawner.Init(scheduler, battlefieldController.GetBattlefieldUnitInterface());
             
-            _playerScreenHealthBar = FindObjectOfType<PlayerScreenHealthBar>();
+            _playerScreenHealthText = FindObjectOfType<PlayerScreenHealthText>();
             GameObject player = Instantiate(playerUnitPrefab, new Vector3(0, 0, 0), Quaternion.identity);
             Unit playerUnit = player.AddComponent<Unit>();
             InitPlayer(playerUnit);
@@ -69,22 +68,23 @@ namespace Units
             Ability magmaWave = new Ability(effectMagmaWave);
 
             abilites.Add(anvilStrikeAbility);
-            //abilites.Add(magmaWave);
+            abilites.Add(magmaWave);
 
             var _abilityManager = new AbilityManager(abilites);
-            var _wanderer = new Wanderer();
+            var _wanderer = new Wanderer(playerUnit);
 
             playerUnit.Init(
-                100,
-                _wanderer,
+                1000,
+                _wanderer.CreateAbilityModifierSet(),
                 Faction.Player,
                 battlefieldController.GetBattlefieldUnitInterface(),
                 _abilityManager,
                 playerUnit.transform,
-                _playerScreenHealthBar,
+                _playerScreenHealthText,
                 unitResourceManager,
                 triggerManager
             );
+            battlefieldController.GetBattlefieldUnitInterface().RegisterWanderer(_wanderer);
         }
     }
 }

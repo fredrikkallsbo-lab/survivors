@@ -1,4 +1,5 @@
 ﻿using System;
+using Battlefield.GameMechanics;
 using Battlefield.GameMechanics.Combat.BattlefieldController;
 using Units;
 using Units.Abilities;
@@ -52,15 +53,11 @@ namespace Battlefield
 
             return null;
         }
-        
-        public void RegisterProjectile(TargetProjectile sendTargetProjectile)
-        {
-            //_battlefieldController.RegisterProjectile(sendTargetProjectile);
-        }
 
-        public void UnregisterProjectile(TargetProjectile targetProjectile)
+
+        public void RegisterWanderer(Wanderer wanderer)
         {
-            //_battlefieldController.UnregisterProjectile(targetProjectile);
+            _battlefieldController.RegisterWanderer(wanderer);
         }
     }
 }

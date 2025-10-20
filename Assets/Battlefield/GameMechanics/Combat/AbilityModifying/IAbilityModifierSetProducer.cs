@@ -2,7 +2,7 @@
 {
     public interface IAbilityModifierSetProducer 
     {
-        public AbilityModifierSet GetAbilityModifierSet();
+       
     }
     
 }

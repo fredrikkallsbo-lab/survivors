@@ -46,7 +46,7 @@ namespace Units.GeneralUnit.Minion
             
             minionUnit.Init(
                 10,
-                new DefaultAbilityModifierSetProducer(),
+                new AbilityModifierSet(0),
                 Faction.Player,
                 _battlefieldController.GetBattlefieldUnitInterface(),
                 _abilityManager,

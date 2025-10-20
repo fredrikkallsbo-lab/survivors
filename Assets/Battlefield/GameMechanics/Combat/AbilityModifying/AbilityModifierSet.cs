@@ -2,9 +2,9 @@
 {
     public class AbilityModifierSet
     {
-        private int _levels;
+        private readonly int _levels;
 
-        private float _attackTime = 1f;
+        private readonly float _attackTime = 1f;
 
         public AbilityModifierSet(int levels)
         {

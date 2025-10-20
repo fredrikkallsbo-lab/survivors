@@ -75,10 +75,6 @@ namespace Units.Abilities
 
         public void ReactToUnitDeath(Unit unit)
         {
-            if (_targetUnit == unit)
-            {
-                _battlefieldController.UnregisterProjectile(this);
-            }
             Destroy(gameObject);
         }
     }

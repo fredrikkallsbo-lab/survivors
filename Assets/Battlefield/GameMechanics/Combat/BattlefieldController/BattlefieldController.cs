@@ -10,18 +10,14 @@ namespace Battlefield.GameMechanics.Combat.BattlefieldController
     {
         [SerializeField] private UnitTracker unitTracker;
         
-        
         private BattlefieldInterfaceForUnit _battlefieldInterfaceForUnit;
         private readonly IEventBus  _eventBus = new EventBus();
-        private Wanderer Wanderer { get; set; }
         private RewardFunnel _rewardFunnel;
 
-    
 
-        private void Awake()
+        public void RegisterWanderer(Wanderer wanderer)
         {
-            Wanderer = new Wanderer();
-            _rewardFunnel = new RewardFunnel(Wanderer);
+            _rewardFunnel = new RewardFunnel(wanderer);
         }
 
         public void RegisterUnit(Unit unit)

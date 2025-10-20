@@ -106,7 +106,7 @@ namespace Battlefield
    
             enemyUnit.Init(
                 10,
-                new DefaultAbilityModifierSetProducer(),
+                new AbilityModifierSet(0),
                 Faction.Enemy,
                 _battlefieldInterfaceForUnit,
                 _abilityManager,

@@ -10,7 +10,7 @@ namespace Units
 {
     public sealed class Unit : MonoBehaviour
     {
-        private IAbilityModifierSetProducer _iAbilityModifierSetProducer;
+      
         private HealthTracker _healthTracker;
 
         public Faction Faction;
@@ -28,7 +28,7 @@ namespace Units
         private TriggerManager  _triggerManager;
 
         public void Init(int health,
-            IAbilityModifierSetProducer abilityModifierSetProducer,
+            AbilityModifierSet abilityModifierSet,
             Faction faction,
             BattlefieldInterfaceForUnit battlefieldInterfaceForUnit,
             AbilityManager abilityManager,
@@ -39,7 +39,6 @@ namespace Units
         {
             _healthTracker = new HealthTracker(health);
             _abilityManager = abilityManager;
-            _iAbilityModifierSetProducer = abilityModifierSetProducer;
             _battlefieldInterfaceForUnit = battlefieldInterfaceForUnit;
             Faction = faction;
             _unitTransform = unitTransform;
@@ -50,16 +49,13 @@ namespace Units
             _battlefieldInterfaceForUnit.RegisterSpawn(this);
             _healthTracker.OnDied += HandleDeath;
             
-            _abilityManager.Init(_iAbilityModifierSetProducer.GetAbilityModifierSet());
+            _abilityManager.Init(abilityModifierSet);
         }
 
 
         private void HandleDeath() => _battlefieldInterfaceForUnit.RegisterDeath(this);
 
-        public void RefreshAbilityModifierSet()
-        {
-            _abilityManager.RefreshAbilityModifierSet(_iAbilityModifierSetProducer.GetAbilityModifierSet());
-        }
+      
 
         public void TakeDamage(int damage)
         {
@@ -80,6 +76,11 @@ namespace Units
         public Vector3 GetPosition()
         {
             return _unitTransform.position;
+        }
+
+        public void UpdateAbilityModifierSet(AbilityModifierSet abilityModifierSet)
+        {
+            _abilityManager.RefreshAbilityModifierSet(abilityModifierSet);
         }
     }
 }
