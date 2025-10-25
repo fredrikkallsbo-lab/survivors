@@ -21,6 +21,7 @@ namespace System.Collections.Generic
             if (trigger == null)
                 return;
 
+            trigger.Disable();
             _triggers.Remove(trigger);
         }
 
