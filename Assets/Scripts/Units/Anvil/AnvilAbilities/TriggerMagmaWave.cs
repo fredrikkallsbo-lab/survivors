@@ -25,6 +25,7 @@ namespace Units.Anvil.AnvilAbilities
 
         public void Enable()
         {
+            _subscription?.Dispose();
             _subscription = _eventBus.Subscribe<ResourceChanged>(e =>
             {
                 Debug.Log("Enabling magma strike");
@@ -41,7 +42,8 @@ namespace Units.Anvil.AnvilAbilities
 
         public void Disable()
         {
-            _subscription.Dispose();
+            _subscription?.Dispose();
+            _subscription = null;
         }
 
         private void Trigger()
