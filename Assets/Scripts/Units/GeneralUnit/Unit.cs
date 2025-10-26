@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using Battlefield;
+using Battlefield.Combat.StatusEffectManagement;
 using Battlefield.GameMechanics.Combat.AbilityModifying;
+using Battlefield.GameMechanics.Combat.BuffManagement;
 using Units.Abilities.AbilityManagement;
 using Units.Anvil.AnvilAbilities;
 using Units.Death;
@@ -32,7 +34,8 @@ namespace Units
         private IEventBus _eventBus;
         
         private IDeathEventCreator _deathEventCreator;
-
+        
+        private StatusEffectManager  _statusEffectManager;
         public void Init(int health,
             AbilityModifier abilityModifier,
             Faction faction,
@@ -60,6 +63,7 @@ namespace Units
             _deathEventCreator  = deathEventCreator;
             
             _abilityManager.Init(abilityModifier);
+            _statusEffectManager = new StatusEffectManager(this);
         }
 
 
@@ -93,6 +97,16 @@ namespace Units
         public void UpdateAbilityModifier(AbilityModifier abilityModifier)
         {
             _abilityManager.RefreshAbilityModifier(abilityModifier);
+        }
+
+        public void ReceiveStatusEffect(IStatusEffect statusEffect)
+        {
+            _statusEffectManager.AddStatusEffect(statusEffect);
+        }
+
+        public void AddTrigger(StatusEffectFieryRune statusEffectFieryRune)
+        {
+            throw new System.NotImplementedException();
         }
 
         public void RemoveTrigger(TriggerFieryRuneOnStrike triggerFieryRuneOnStrike)

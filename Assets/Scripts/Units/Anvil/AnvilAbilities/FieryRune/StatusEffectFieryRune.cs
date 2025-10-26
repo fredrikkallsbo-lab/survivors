@@ -22,6 +22,7 @@ namespace Units.Anvil.AnvilAbilities
                 sortingOrderOffset: 10,
                 scale: 1f
             );
+            _unit.AddTrigger(new StatusEffectFieryRune());
             Debug.Log("Here it should add on death trigger");
         }
 

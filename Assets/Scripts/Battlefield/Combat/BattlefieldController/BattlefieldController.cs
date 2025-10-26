@@ -3,6 +3,7 @@ using Battlefield.GameMechanics;
 using Battlefield.GameMechanics.Combat.loot;
 using Units;
 using UnityEngine;
+using Random = System.Random;
 
 namespace Battlefield.Combat.BattlefieldController
 {
@@ -43,5 +44,21 @@ namespace Battlefield.Combat.BattlefieldController
             return _eventBus;
         }
 
+        public Unit GetRandomUnit(Faction targetFaction)
+        {
+            List<Unit> units = unitTracker.GetUnits();
+            
+            List<Unit> factionUnits = new List<Unit>();
+
+            foreach (var unit in units)
+            {
+                if (unit.faction == targetFaction)
+                {
+                    factionUnits.Add(unit);
+                }
+            }
+            int index = new Random().Next(0, factionUnits.Count);
+            return factionUnits[index];
+        }
     }
 }

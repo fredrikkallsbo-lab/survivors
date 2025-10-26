@@ -47,7 +47,7 @@ namespace Units.Anvil.AnvilAbilities
         private void Trigger()
         {
             
-            //_anvilSpellcaster.CastFieryRune();
+            _anvilSpellcaster.CastFieryRune();
         }
     }
 }

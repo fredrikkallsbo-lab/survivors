@@ -59,7 +59,7 @@ namespace Units
             var spellcaster = go.GetComponent<AnvilSpellcaster>();
             Debug.Assert(expandingCirclePrefab != null,
                 "UnitSpawner: expandingCirclePrefab is not assigned in Inspector.");
-            spellcaster.Init(expandingCirclePrefab);
+            spellcaster.Init(expandingCirclePrefab, battlefieldController);
 
             // build your ability using this spellcaster    
             AbilityEffectMagmaWave effectMagmaWave = new AbilityEffectMagmaWave(
