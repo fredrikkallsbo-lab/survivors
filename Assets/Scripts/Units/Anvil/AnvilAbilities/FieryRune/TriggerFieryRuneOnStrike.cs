@@ -8,7 +8,7 @@ namespace Units.Anvil.AnvilAbilities
     public class TriggerFieryRuneOnStrike : ITrigger
     {
         private int _lastTriggeredOnStrikeNr = 0;
-        private int _triggerFrequency = 5;
+        private int _triggerFrequency = 2;
         private AnvilSpellcaster _anvilSpellcaster;
         
         
@@ -32,6 +32,7 @@ namespace Units.Anvil.AnvilAbilities
                 {
                     if (e.NewValue >= _lastTriggeredOnStrikeNr + _triggerFrequency)
                     {
+                        Debug.Log("Inside if case");
                         _lastTriggeredOnStrikeNr = e.NewValue;
                         Trigger();
                     } 
@@ -46,7 +47,7 @@ namespace Units.Anvil.AnvilAbilities
         
         private void Trigger()
         {
-            
+            Debug.Log("Fiery rune triggering");
             _anvilSpellcaster.CastFieryRune();
         }
     }

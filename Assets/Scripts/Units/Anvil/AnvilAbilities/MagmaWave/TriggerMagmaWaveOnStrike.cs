@@ -9,7 +9,7 @@ namespace Units.Anvil.AnvilAbilities
     public class TriggerMagmaWaveOnStrike: ITrigger
     {
         private int _lastTriggeredOnStrikeNr = 0;
-        private int _triggerFrequency = 5;
+        private int _triggerFrequency = 10;
         public readonly ResourceId ResourceId = ResourceId.AnvilStrike;
         
         private readonly IEventBus _eventBus;

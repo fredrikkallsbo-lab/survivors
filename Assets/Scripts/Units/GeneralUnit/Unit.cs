@@ -79,7 +79,7 @@ namespace Units
             if (_healthTracker.IsDead())
             {
                 
-                _deathEventCreator.PublishDeathEvent(_eventBus);
+                _deathEventCreator.PublishDeathEvent(_eventBus, this);
                 _battlefieldInterfaceForUnit.RegisterDeath(this);
             }
         }
@@ -101,6 +101,7 @@ namespace Units
 
         public void ReceiveStatusEffect(IStatusEffect statusEffect)
         {
+            Debug.Log("Received status effect");
             _statusEffectManager.AddStatusEffect(statusEffect);
             statusEffect.ApplyStatusEffect(this);
         }
@@ -113,6 +114,11 @@ namespace Units
         public void RemoveTrigger(ITrigger trigger)
         {
             _triggerManager.Remove(trigger);
+        }
+
+        public bool HasStatusEffect(StatusEffectId statusEffectId)
+        {
+            return _statusEffectManager.HasStatusEffect(statusEffectId);
         }
     }
 }

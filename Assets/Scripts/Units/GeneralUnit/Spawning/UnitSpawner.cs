@@ -11,6 +11,7 @@ using Units.Anvil;
 using Units.Anvil.AnvilAbilities;
 using Units.Anvil.AnvilAbilities.MagmaWave;
 using Units.Death;
+using Units.GeneralAbilities;
 using Units.GeneralUnit.Minion;
 using Units.HealthDisplay;
 using Units.Resources;
@@ -76,7 +77,7 @@ namespace Units
             Ability fieryRune = new Ability(effectFieryRune);
             
             abilities.Add(anvilStrikeAbility);
-            //abilities.Add(magmaWave);
+            abilities.Add(magmaWave);
             abilities.Add(fieryRune);
 
             var _abilityManager = new AbilityManager(abilities);

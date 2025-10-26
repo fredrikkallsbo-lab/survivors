@@ -4,6 +4,6 @@ namespace Units.Death
 {
     public interface IDeathEventCreator
     {
-        public void PublishDeathEvent(IEventBus eventBus);
+        public void PublishDeathEvent(IEventBus eventBus, Unit unit);
     }
 }

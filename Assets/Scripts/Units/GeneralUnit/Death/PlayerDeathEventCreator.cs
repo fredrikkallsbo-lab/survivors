@@ -5,7 +5,7 @@ namespace Units.Death
 {
     public class PlayerDeathEventCreator :  IDeathEventCreator
     {
-        public void PublishDeathEvent(IEventBus eventBus)
+        public void PublishDeathEvent(IEventBus eventBus,  Unit unit)
         {
             eventBus.Publish(new PlayerDeathEvent());
         }
