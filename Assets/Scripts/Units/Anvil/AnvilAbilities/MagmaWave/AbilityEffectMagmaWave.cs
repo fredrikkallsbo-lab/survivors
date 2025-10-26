@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using Battlefield.GameMechanics.Combat.AbilityModifying;
 using Units.Abilities.AbilityManagement.AbilityGeneral;
+using Units.GeneralAbilities.AbilityManagement.AbilityGeneral;
 
-namespace Units.Anvil.AnvilAbilities
+namespace Units.Anvil.AnvilAbilities.MagmaWave
 {
     public class AbilityEffectMagmaWave : IAbilityEffect
     {
-        private TriggerMagmaWave _triggerMagmaWave;
+        private TriggerMagmaWaveOnStrike _triggerMagmaWaveOnStrike;
         private TriggerManager _triggerManager;
         private IEventBus _eventBus;
         
@@ -14,22 +15,22 @@ namespace Units.Anvil.AnvilAbilities
         {
             _triggerManager = triggerManager;
             _eventBus = eventBus;
-            _triggerMagmaWave = new TriggerMagmaWave(_eventBus,  spellcaster);
+            _triggerMagmaWaveOnStrike = new TriggerMagmaWaveOnStrike(_eventBus,  spellcaster);
         }
 
-        public void Init(AbilityModifierSet abilityModifierSet)
+        public void Init(AbilityModifier abilityModifier)
         {
-            _triggerManager.Add(_triggerMagmaWave);
+            _triggerManager.Add(_triggerMagmaWaveOnStrike);
         }
 
-        public void RefreshAbilityModifierSet(AbilityModifierSet abilityModifierSet)
+        public void RefreshAbilityModifier(AbilityModifier abilityModifier)
         {
             return;
         }
 
         public void ManualOnDisable()
         {
-            _triggerManager.Remove(_triggerMagmaWave);
+            _triggerManager.Remove(_triggerMagmaWaveOnStrike);
         }
     }
 }

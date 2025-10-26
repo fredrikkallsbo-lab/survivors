@@ -1,4 +1,5 @@
 ﻿using Battlefield.GameMechanics.Combat.AbilityModifying;
+using Units.GeneralAbilities.AbilityManagement.AbilityGeneral;
 using Units.Resources;
 
 namespace Units.Abilities.AbilityManagement.AbilityGeneral
@@ -12,14 +13,14 @@ namespace Units.Abilities.AbilityManagement.AbilityGeneral
             this.effect = effect;
         }
 
-        public void Init(AbilityModifierSet abilityModifierSet)
+        public void Init(AbilityModifier abilityModifier)
         {
-            effect.Init(abilityModifierSet);
+            effect.Init(abilityModifier);
         }
 
-        public void RefreshAbilityModifierSet(AbilityModifierSet abilityModifierSet)
+        public void RefreshAbilityModifierSet(AbilityModifier abilityModifierSet)
         {
-            effect.RefreshAbilityModifierSet(abilityModifierSet);
+            effect.RefreshAbilityModifier(abilityModifierSet);
         }
 
         public void ManualOnDisable()

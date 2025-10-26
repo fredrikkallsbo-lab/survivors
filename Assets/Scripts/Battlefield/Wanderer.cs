@@ -19,12 +19,12 @@ namespace Battlefield.GameMechanics
         public void AddExperience(int i)
         {
             _experience += i;
-            _playerUnit.UpdateAbilityModifierSet(CreateAbilityModifierSet());
+            _playerUnit.UpdateAbilityModifier(CreateAbilityModifier());
         }
 
-        public AbilityModifierSet CreateAbilityModifierSet()
+        public AbilityModifier CreateAbilityModifier()
         {
-            return new AbilityModifierSet(_experience);
+            return new AbilityModifier(_experience);
         }
     }
 }

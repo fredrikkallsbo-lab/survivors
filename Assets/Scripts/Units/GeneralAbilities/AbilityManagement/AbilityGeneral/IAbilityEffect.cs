@@ -1,14 +1,13 @@
 ﻿using Battlefield.GameMechanics.Combat.AbilityModifying;
-using Units.Resources;
 
-namespace Units.Abilities.AbilityManagement.AbilityGeneral
+namespace Units.GeneralAbilities.AbilityManagement.AbilityGeneral
 {
     public interface IAbilityEffect
     {
 
-        public void Init(AbilityModifierSet abilityModifierSet);
+        public void Init(AbilityModifier abilityModifier);
         
-        public void RefreshAbilityModifierSet(AbilityModifierSet abilityModifierSet);
+        public void RefreshAbilityModifier(AbilityModifier abilityModifier);
         
         public void ManualOnDisable();
     }

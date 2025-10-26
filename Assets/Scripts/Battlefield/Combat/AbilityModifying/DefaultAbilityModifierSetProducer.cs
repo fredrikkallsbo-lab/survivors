@@ -1,10 +1,10 @@
 ﻿namespace Battlefield.GameMechanics.Combat.AbilityModifying
 {
-    public class DefaultAbilityModifierSetProducer : IAbilityModifierSetProducer
+    public class DefaultAbilityModifierProducer : IAbilityModifierProducer
     {
-        public AbilityModifierSet GetAbilityModifierSet()
+        public AbilityModifier GetAbilityModifier()
         {
-            return new AbilityModifierSet(0);
+            return new AbilityModifier(0);
         }
     }
 }

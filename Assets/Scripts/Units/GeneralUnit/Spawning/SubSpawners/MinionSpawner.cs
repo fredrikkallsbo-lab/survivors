@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Battlefield;
+using Battlefield.Combat.BattlefieldController;
 using Battlefield.GameMechanics.Combat.AbilityModifying;
 using Battlefield.GameMechanics.Combat.BattlefieldController;
 using Units.Abilities;
@@ -47,7 +48,7 @@ namespace Units.GeneralUnit.Minion
             
             minionUnit.Init(
                 10,
-                new AbilityModifierSet(0),
+                new AbilityModifier(0),
                 Faction.Player,
                 _battlefieldController.GetBattlefieldUnitInterface(),
                 _abilityManager,

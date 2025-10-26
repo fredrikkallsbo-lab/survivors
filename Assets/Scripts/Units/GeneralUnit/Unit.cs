@@ -2,12 +2,11 @@
 using Battlefield;
 using Battlefield.GameMechanics.Combat.AbilityModifying;
 using Units.Abilities.AbilityManagement;
+using Units.Anvil.AnvilAbilities;
 using Units.Death;
-using Units.GeneralUnit.DeathManagement;
 using Units.HealthDisplay;
 using Units.Resources;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Units
 {
@@ -35,7 +34,7 @@ namespace Units
         private IDeathEventCreator _deathEventCreator;
 
         public void Init(int health,
-            AbilityModifierSet abilityModifierSet,
+            AbilityModifier abilityModifier,
             Faction faction,
             BattlefieldInterfaceForUnit battlefieldInterfaceForUnit,
             AbilityManager abilityManager,
@@ -60,7 +59,7 @@ namespace Units
             _healthTracker.OnDied += HandleDeath;
             _deathEventCreator  = deathEventCreator;
             
-            _abilityManager.Init(abilityModifierSet);
+            _abilityManager.Init(abilityModifier);
         }
 
 
@@ -91,9 +90,14 @@ namespace Units
             return _unitTransform.position;
         }
 
-        public void UpdateAbilityModifierSet(AbilityModifierSet abilityModifierSet)
+        public void UpdateAbilityModifier(AbilityModifier abilityModifier)
         {
-            _abilityManager.RefreshAbilityModifierSet(abilityModifierSet);
+            _abilityManager.RefreshAbilityModifier(abilityModifier);
+        }
+
+        public void RemoveTrigger(TriggerFieryRuneOnStrike triggerFieryRuneOnStrike)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

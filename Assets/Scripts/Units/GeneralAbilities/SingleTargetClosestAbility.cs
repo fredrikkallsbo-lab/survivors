@@ -2,6 +2,7 @@
 using Battlefield.GameMechanics.Combat.AbilityModifying;
 using Units.Abilities.AbilityManagement;
 using Units.Abilities.AbilityManagement.AbilityGeneral;
+using Units.GeneralAbilities.AbilityManagement.AbilityGeneral;
 using Units.Resources;
 using UnityEngine;
 
@@ -16,7 +17,7 @@ namespace Units.Abilities
         
         private System.Action _cancel;
         
-        public AbilityModifierSet _abilityModifierSet;
+        public AbilityModifier _abilityModifier;
 
         private Transform _sourceTransform;
 
@@ -44,10 +45,10 @@ namespace Units.Abilities
             _battlefieldInterface = battlefieldInterface;
         }
 
-        public void Init(AbilityModifierSet abilityModifierSet)
+        public void Init(AbilityModifier abilityModifierSet)
         {
             Debug.Log("SingleTargetClosestAbility.Init|");
-            _abilityModifierSet = abilityModifierSet;
+            _abilityModifier = abilityModifierSet;
             _cancel = _scheduler.Every(1.0, Attack);
         }
 
@@ -56,9 +57,9 @@ namespace Units.Abilities
             _cancel?.Invoke();
         }
 
-        public void RefreshAbilityModifierSet(AbilityModifierSet abilityModifierSet)
+        public void RefreshAbilityModifier(AbilityModifier abilityModifier)
         {
-            _abilityModifierSet = abilityModifierSet;
+            _abilityModifier = abilityModifier;
         }
 
         public void Attack()
@@ -67,7 +68,7 @@ namespace Units.Abilities
                 _battlefieldInterface.GetClosestUnitOfFaction(_targetFaction, _sourceTransform, _radius, _layerMask);
             if (targetUnit != null)
             {
-                targetUnit.TakeDamage(_baseDamage + _abilityModifierSet.Levels);
+                targetUnit.TakeDamage(_baseDamage + _abilityModifier.Levels);
             }
         }
     }

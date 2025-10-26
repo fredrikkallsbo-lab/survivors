@@ -2,6 +2,7 @@
 using Battlefield;
 using Battlefield.GameMechanics.Combat.AbilityModifying;
 using Units.Abilities.AbilityManagement.AbilityGeneral;
+using Units.GeneralAbilities.AbilityManagement.AbilityGeneral;
 using Units.Resources;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -18,7 +19,7 @@ namespace Units.Abilities
         
         private Action _cancel;
         
-        public AbilityModifierSet _abilityModifierSet;
+        public AbilityModifier _abilityModifier;
 
         private Transform _sourceTransform;
 
@@ -47,15 +48,15 @@ namespace Units.Abilities
             _battlefieldInterface = battlefieldInterface;
         }
         
-        public void Init(AbilityModifierSet abilityModifierSet)
+        public void Init(AbilityModifier abilityModifier)
         {
-            _abilityModifierSet = abilityModifierSet;
+            _abilityModifier = abilityModifier;
             _cancel = _scheduler.Every(1.0, Attack);
         }
 
-        public void RefreshAbilityModifierSet(AbilityModifierSet abilityModifierSet)
+        public void RefreshAbilityModifier(AbilityModifier abilityModifierSet)
         {
-            _abilityModifierSet = abilityModifierSet;
+            _abilityModifier = abilityModifierSet;
         }
 
         public void ManualOnDisable()

@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
+using Battlefield.GameMechanics;
 using Battlefield.GameMechanics.Combat.loot;
 using Units;
-using Units.Abilities;
 using UnityEngine;
 
-namespace Battlefield.GameMechanics.Combat.BattlefieldController
+namespace Battlefield.Combat.BattlefieldController
 {
     public class BattlefieldController: MonoBehaviour
     {

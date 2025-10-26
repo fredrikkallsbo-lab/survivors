@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Battlefield;
+using Battlefield.Combat.BattlefieldController;
 using Battlefield.GameMechanics;
 using Battlefield.GameMechanics.Combat.BattlefieldController;
 using Units.Abilities;
@@ -8,6 +9,7 @@ using Units.Abilities.AbilityManagement;
 using Units.Abilities.AbilityManagement.AbilityGeneral;
 using Units.Anvil;
 using Units.Anvil.AnvilAbilities;
+using Units.Anvil.AnvilAbilities.MagmaWave;
 using Units.Death;
 using Units.GeneralUnit.Minion;
 using Units.HealthDisplay;
@@ -76,7 +78,7 @@ namespace Units
 
             playerUnit.Init(
                 10,
-                _wanderer.CreateAbilityModifierSet(),
+                _wanderer.CreateAbilityModifier(),
                 Faction.Player,
                 battlefieldController.GetBattlefieldUnitInterface(),
                 _abilityManager,

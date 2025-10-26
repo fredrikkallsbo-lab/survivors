@@ -10,11 +10,11 @@ namespace Units.Abilities.AbilityManagement
     {
         private List<Ability> _abilities;
         
-        public void Init(AbilityModifierSet abilityModifierSet)
+        public void Init(AbilityModifier abilityModifier)
         {
             foreach (var ability in _abilities)
             {
-                ability.Init(abilityModifierSet);
+                ability.Init(abilityModifier);
             }
         }
         
@@ -23,11 +23,11 @@ namespace Units.Abilities.AbilityManagement
             _abilities = abilities;
         }
 
-        public void RefreshAbilityModifierSet(AbilityModifierSet abilityModifierSet)
+        public void RefreshAbilityModifier(AbilityModifier abilityModifier)
         {
             foreach (var ability in _abilities)
             {
-                ability.RefreshAbilityModifierSet(abilityModifierSet);
+                ability.RefreshAbilityModifierSet(abilityModifier);
             }
         }
 

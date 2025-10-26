@@ -1,12 +1,16 @@
-﻿namespace Battlefield.GameMechanics.Combat.AbilityModifying
+﻿using Battlefield.Combat.DamageCalculation.DamagePipeline;
+
+namespace Battlefield.GameMechanics.Combat.AbilityModifying
 {
-    public class AbilityModifierSet
+    public class AbilityModifier
     {
         private readonly int _levels;
 
         private readonly float _attackTime = 1f;
+        
+        private DamagePipeline _damagePipeline;
 
-        public AbilityModifierSet(int levels)
+        public AbilityModifier(int levels)
         {
             _levels = levels;
         }
@@ -17,5 +21,7 @@
         {
             return _attackTime;
         }
+        
+        
     }
 }
