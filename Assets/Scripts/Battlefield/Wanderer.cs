@@ -11,7 +11,7 @@ namespace Battlefield.GameMechanics
     {
         private int _experience;
         private Unit _playerUnit;
-        private int experiencePerLevel = 2;
+        private int experiencePerLevel = 10;
         private IEventBus _eventBus;
 
         public Wanderer(Unit playerUnit, IEventBus eventBus)
@@ -23,6 +23,7 @@ namespace Battlefield.GameMechanics
         
         public void AddExperience(int i)
         {
+            Debug.Log($"Adding experience {i}");
             _experience += i;
             CheckLevelup();
             _playerUnit.UpdateAbilityModifier(CreateAbilityModifier());

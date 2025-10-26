@@ -11,18 +11,18 @@ namespace Units.Anvil.AnvilAbilities
         private TriggerFieryRuneOnStrike _triggerFieryRuneOnStrike;
         private Unit _unit;
         public readonly StatusEffectId StatusEffectId = StatusEffectId.FieryRune;
-        
+        private FieryRuneVisual _fieryRuneVisual;
 
+        
         public void ApplyStatusEffect(Unit unit)
         {
             _unit = unit;
-            FieryRuneVisual.CreateFromResources(
+            _fieryRuneVisual = FieryRuneVisual.CreateFromResources(
                 _unit.gameObject,
                 "Sprites/Random/FieryRune",
                 sortingOrderOffset: 10,
-                scale: 1f
+                scale: 1.3f
             );
-            _unit.AddTrigger(new StatusEffectFieryRune());
             Debug.Log("Here it should add on death trigger");
         }
 
@@ -34,6 +34,7 @@ namespace Units.Anvil.AnvilAbilities
         public void RemoveStatusEffect()
         {
             _unit.RemoveTrigger(_triggerFieryRuneOnStrike);
+            Object.Destroy(_fieryRuneVisual);
         }
     }
 }

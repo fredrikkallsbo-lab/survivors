@@ -19,7 +19,6 @@ namespace Battlefield.GameMechanics.Combat.BuffManagement
         public void AddStatusEffect(IStatusEffect statusEffect)
         {
             _statusEffects.Add(statusEffect);
-            statusEffect.ApplyStatusEffect(_affectedUnit);
         }
 
         public bool HasStatusEffect(StatusEffectId statusEffectId)

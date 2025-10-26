@@ -102,16 +102,17 @@ namespace Units
         public void ReceiveStatusEffect(IStatusEffect statusEffect)
         {
             _statusEffectManager.AddStatusEffect(statusEffect);
+            statusEffect.ApplyStatusEffect(this);
         }
 
-        public void AddTrigger(StatusEffectFieryRune statusEffectFieryRune)
+        public void AddTrigger(ITrigger trigger)
         {
-            throw new System.NotImplementedException();
+            _triggerManager.Add(trigger);
         }
 
-        public void RemoveTrigger(TriggerFieryRuneOnStrike triggerFieryRuneOnStrike)
+        public void RemoveTrigger(ITrigger trigger)
         {
-            throw new System.NotImplementedException();
+            _triggerManager.Remove(trigger);
         }
     }
 }

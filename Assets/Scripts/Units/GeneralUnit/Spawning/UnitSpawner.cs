@@ -48,7 +48,7 @@ namespace Units
                 unitResourceManager.GetUnitResourceInterface(),
                 battlefieldController.GetEventBus());
             Ability anvilStrikeAbility = new Ability(effectAnvilStrike);
-            List<Ability> abilites = new List<Ability>();
+            List<Ability> abilities = new List<Ability>();
 
 
             // DO NOT instantiate the circle here
@@ -67,13 +67,19 @@ namespace Units
                 battlefieldController.GetEventBus(),
                 spellcaster
             );
-
             Ability magmaWave = new Ability(effectMagmaWave);
 
-            abilites.Add(anvilStrikeAbility);
-            abilites.Add(magmaWave);
+            AbilityEffectFieryRune effectFieryRune = new AbilityEffectFieryRune(
+                spellcaster,
+                triggerManager,
+                battlefieldController.GetEventBus());
+            Ability fieryRune = new Ability(effectFieryRune);
+            
+            abilities.Add(anvilStrikeAbility);
+            //abilities.Add(magmaWave);
+            abilities.Add(fieryRune);
 
-            var _abilityManager = new AbilityManager(abilites);
+            var _abilityManager = new AbilityManager(abilities);
             var _wanderer = new Wanderer(playerUnit, battlefieldController.GetEventBus());
 
             playerUnit.Init(
