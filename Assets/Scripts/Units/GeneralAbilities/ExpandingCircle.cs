@@ -195,7 +195,7 @@ namespace Units.Abilities
             custom?.OnTouchedByCircle(this, other);
 
             Unit otherUnit = other.GetComponent<Unit>();
-            otherUnit.TakeDamage(5);
+            otherUnit.TakeDamage(50);
             
             // Built-in simple effects
             switch (effectMode)

@@ -74,10 +74,10 @@ namespace Units
             abilites.Add(magmaWave);
 
             var _abilityManager = new AbilityManager(abilites);
-            var _wanderer = new Wanderer(playerUnit);
+            var _wanderer = new Wanderer(playerUnit, battlefieldController.GetEventBus());
 
             playerUnit.Init(
-                10,
+                1000,
                 _wanderer.CreateAbilityModifier(),
                 Faction.Player,
                 battlefieldController.GetBattlefieldUnitInterface(),
