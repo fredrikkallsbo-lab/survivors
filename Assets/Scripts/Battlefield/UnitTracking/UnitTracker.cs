@@ -20,6 +20,11 @@ namespace Battlefield
         {
             _units.Remove(unit);
         }
+
+        public List<Unit> GetUnits()
+        {
+            return _units;
+        }
         
     }
 }

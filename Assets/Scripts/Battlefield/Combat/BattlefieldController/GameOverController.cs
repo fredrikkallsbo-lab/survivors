@@ -10,7 +10,7 @@ namespace Battlefield.GameMechanics.Combat.BattlefieldController
 {
     public class GameOverController : MonoBehaviour
     {
-        [SerializeField] private BattlefieldController battlefieldController;
+        [SerializeField] private Battlefield.Combat.BattlefieldController.BattlefieldController battlefieldController;
         private IEventBus _bus;
         private IDisposable _deathSub;
 

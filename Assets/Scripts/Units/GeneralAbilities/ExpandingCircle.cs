@@ -2,96 +2,194 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Units.Abilities
+namespace Units.GeneralAbilities
 {
     [RequireComponent(typeof(CircleCollider2D), typeof(LineRenderer))]
+    [DisallowMultipleComponent]
     public class ExpandingCircle : MonoBehaviour
     {
-        [Header("Expansion")] [Min(0f)] public float startRadius = 0.1f;
-        [Min(0f)] public float maxRadius = 5f;
-        [Min(0f)] public float expansionSpeed = 1f; // units of collider radius per second
-        public bool destroyOnMax = true; // destroy GameObject when reaching max
-        public bool stopAtMax = true; // stop expanding at max
+        [Header("Targeting")] 
+        public LayerMask targetLayers = ~0;
+        public bool reactToTriggers = true;
 
-        [Header("Targeting")] public LayerMask targetLayers = ~0; // which layers to react to
-        public bool reactToTriggers = true; // should we react to other triggers?
-
-        [Header("Effect")] public EffectMode effectMode = EffectMode.Push;
-        public float effectStrength = 5f; // magnitude for push/pull
+        [Header("Effect")] 
+        public EffectMode effectMode = EffectMode.Push;
+        public float effectStrength = 5f;
         public ForceMode2D forceMode = ForceMode2D.Impulse;
 
-        [Header("Events")] public UnityEvent<Collider2D> onTouch; // invoked when we touch a collider
+        [Header("Events")] 
+        public UnityEvent<Collider2D> onTouch;
 
-        // Optional: cooldown so we don't spam the same target every frame if using Stay
-        [Min(0f)] public float rehitCooldown = 0.1f;
-
-        
         [Header("Visualization")]
         public bool drawRing = true;
         [Min(3)] public int ringSegments = 64;
         [Min(0f)] public float ringWidth = 0.05f;
         public string ringSortingLayer = "Default";
         public int ringSortingOrder = 0;
+        public Color ringColor = new Color(1f, 0.5f, 0f, 1f);
 
-        private LineRenderer _ring;
-        
-        
+        // —— Runtime-configurable fields (set via Init)
+        float _startRadius;
+        float _maxRadius;
+        float _expansionSpeed;
+        bool  _destroyOnMax;
+        bool  _stopAtMax;
+        float _initialDelay;
+        float _damagePerHit;
+
+        // —— Internals
+        CircleCollider2D _circle;
+        LineRenderer     _ring;
+        float _delayTimer;
+        bool  _started;
+        float _rehitCooldown = 0.1f;
+        float _sweepTimer;
+        readonly Dictionary<Collider2D, float> _lastHitTime = new();
+
+        public enum EffectMode { None, Push, Pull }
+
         // Public accessor
-        public float Radius => _circle.radius;
+        public float Radius => _circle != null ? _circle.radius : 0f;
 
-        // Interface hook: any component implementing this will be called
-        // on touch so you can do custom effects without modifying this class.
-        public interface IExpandingCircleAffectable
+        // ---------- Factory & Init ----------
+
+        public struct Params
         {
-            void OnTouchedByCircle(ExpandingCircle circle, Collider2D selfCollider);
+            public Vector3 position;
+            public Transform parent;
+            public float startRadius;
+            public float maxRadius;
+            public float expansionSpeed;
+            public float initialDelay;
+            public float damagePerHit;
+            public bool  destroyOnMax;
+            public bool  stopAtMax;
+
+            // Optional quick visual overrides
+            public bool? drawRing;
+            public int?  ringSegments;
+            public float? ringWidth;
+            public Color? ringColor;
+            public string ringSortingLayer;
+            public int?  ringSortingOrder;
+
+            // Optional effect overrides
+            public EffectMode? effectMode;
+            public float? effectStrength;
+            public ForceMode2D? forceMode;
+            public LayerMask? targetLayers;
+            public bool? reactToTriggers;
         }
 
-        public enum EffectMode
+        /// <summary>
+        /// Spawns and configures an expanding circle with code-defined parameters.
+        /// </summary>
+        public static ExpandingCircle Spawn(Params p)
         {
-            None,
-            Push, // push away from circle center
-            Pull // pull toward circle center
+            var go = new GameObject("ExpandingCircle");
+            if (p.parent) { go.transform.SetParent(p.parent, false); go.transform.position = p.position; }
+            else          { go.transform.position = p.position; }
+
+            var circle = go.AddComponent<ExpandingCircle>();
+            circle.Init(p);
+            return circle;
         }
 
-        private CircleCollider2D _circle;
-        private float _timeSinceRehitSweep;
-        private readonly Dictionary<Collider2D, float> _lastHitTime = new();
-
-        private void Awake()
+        /// <summary> Apply configuration and prepare for expansion. </summary>
+        public void Init(Params p)
         {
-            destroyOnMax = true;
+            // Required components
             _circle = GetComponent<CircleCollider2D>();
+            _ring   = GetComponent<LineRenderer>();
+
+            // Runtime config
+            _startRadius    = Mathf.Max(0f, p.startRadius);
+            _maxRadius      = Mathf.Max(0f, p.maxRadius);
+            _expansionSpeed = Mathf.Max(0f, p.expansionSpeed);
+            _destroyOnMax   = p.destroyOnMax;
+            _stopAtMax      = p.stopAtMax;
+            _initialDelay   = Mathf.Max(0f, p.initialDelay);
+            _damagePerHit   = Mathf.Max(0f, p.damagePerHit);
+
+            // Optional overrides
+            if (p.drawRing.HasValue)        drawRing = p.drawRing.Value;
+            if (p.ringSegments.HasValue)    ringSegments = Mathf.Max(3, p.ringSegments.Value);
+            if (p.ringWidth.HasValue)       ringWidth = Mathf.Max(0f, p.ringWidth.Value);
+            if (p.ringColor.HasValue)       ringColor = p.ringColor.Value;
+            if (!string.IsNullOrEmpty(p.ringSortingLayer)) ringSortingLayer = p.ringSortingLayer;
+            if (p.ringSortingOrder.HasValue) ringSortingOrder = p.ringSortingOrder.Value;
+
+            if (p.effectMode.HasValue)      effectMode = p.effectMode.Value;
+            if (p.effectStrength.HasValue)  effectStrength = p.effectStrength.Value;
+            if (p.forceMode.HasValue)       forceMode = p.forceMode.Value;
+            if (p.targetLayers.HasValue)    targetLayers = p.targetLayers.Value;
+            if (p.reactToTriggers.HasValue) reactToTriggers = p.reactToTriggers.Value;
+
+            // Collider
             _circle.isTrigger = true;
-            _circle.radius = Mathf.Clamp(startRadius, 0f, maxRadius > 0f ? maxRadius : Mathf.Infinity);
-            
-            // --- Ring setup ---
-            _ring = GetComponent<LineRenderer>();
-            if (drawRing)
-            {
-                if (_ring == null) _ring = gameObject.AddComponent<LineRenderer>();
-                _ring.useWorldSpace = true;
-                _ring.loop = true;
-                _ring.positionCount = ringSegments;
-                _ring.startWidth = ringWidth;
-                _ring.endWidth = ringWidth;
-                _ring.numCornerVertices = 2;
-                _ring.numCapVertices = 2;
-                _ring.sortingLayerName = ringSortingLayer;
-                _ring.sortingOrder = ringSortingOrder;
+            _circle.radius = Mathf.Clamp(_startRadius, 0f, _maxRadius > 0f ? _maxRadius : Mathf.Infinity);
 
-                // Basic material so it shows up; you can swap in your own in the Inspector
-                if (_ring.sharedMaterial == null)
-                    _ring.sharedMaterial = new Material(Shader.Find("Sprites/Default"));
-
-                // Orange color
-                _ring.startColor = new Color(1f, 0.5f, 0f, 1f);
-                _ring.endColor   = new Color(1f, 0.5f, 0f, 1f);
-
-                UpdateRing(); // draw initial
-            }
+            // Ring
+            SetupRing();
+            _delayTimer = _initialDelay;
+            _started = (_initialDelay <= 0f);
+            if (drawRing) UpdateRing();
         }
 
-        private void UpdateRing()
+        void SetupRing()
+        {
+            if (!drawRing) return;
+
+            if (_ring == null) _ring = gameObject.AddComponent<LineRenderer>();
+            _ring.useWorldSpace = true;
+            _ring.loop = true;
+            _ring.positionCount = ringSegments;
+            _ring.startWidth = ringWidth;
+            _ring.endWidth = ringWidth;
+            _ring.numCornerVertices = 2;
+            _ring.numCapVertices = 2;
+            _ring.sortingLayerName = ringSortingLayer;
+            _ring.sortingOrder = ringSortingOrder;
+
+            if (_ring.sharedMaterial == null)
+                _ring.sharedMaterial = new Material(Shader.Find("Sprites/Default"));
+
+            _ring.startColor = ringColor;
+            _ring.endColor   = ringColor;
+        }
+
+        void Update()
+        {
+            // Handle initial delay
+            if (!_started)
+            {
+                _delayTimer -= Time.deltaTime;
+                if (_delayTimer <= 0f) _started = true;
+                else { if (drawRing) UpdateRing(); return; }
+            }
+
+            // Expand
+            if (_expansionSpeed > 0f)
+            {
+                float newRadius = _circle.radius + _expansionSpeed * Time.deltaTime;
+
+                if (_maxRadius > 0f && newRadius >= _maxRadius)
+                {
+                    newRadius = _maxRadius;
+                    if (_stopAtMax) _expansionSpeed = 0f;
+                    if (_destroyOnMax) { Destroy(gameObject); return; }
+                }
+                _circle.radius = newRadius;
+            }
+
+            // Housekeeping
+            _sweepTimer += Time.deltaTime;
+            if (_sweepTimer > 1f) { _sweepTimer = 0f; SweepRehitMap(); }
+
+            if (drawRing) UpdateRing();
+        }
+
+        void UpdateRing()
         {
             if (_ring == null || ringSegments < 3) return;
 
@@ -99,7 +197,6 @@ namespace Units.Abilities
             Vector3 center = transform.position;
             float r = _circle.radius;
 
-            // Place points around the circumference
             for (int i = 0; i < ringSegments; i++)
             {
                 float angle = i * angleStep;
@@ -108,158 +205,79 @@ namespace Units.Abilities
                 _ring.SetPosition(i, new Vector3(center.x + x, center.y + y, center.z));
             }
         }
-        
-        private void Update()
+
+        void OnTriggerEnter2D(Collider2D other)
         {
-            // Expand radius
-            if (expansionSpeed > 0f)
-            {
-                var newRadius = _circle.radius + expansionSpeed * Time.deltaTime;
-
-                if (maxRadius > 0f && newRadius >= maxRadius)
-                {
-                    newRadius = maxRadius;
-
-                    if (stopAtMax) expansionSpeed = 0f;
-                    if (destroyOnMax)
-                    {
-                        // Invoke one last overlap pass before destroy (optional)
-                        // Physics engine will have already fired events.
-                        Destroy(gameObject);
-                    }
-                }
-
-                _circle.radius = newRadius;
-            }
-
-            // Advance time for re-hit bookkeeping and clean up stale entries occasionally
-            _timeSinceRehitSweep += Time.deltaTime;
-            if (_timeSinceRehitSweep > 1f)
-            {
-                _timeSinceRehitSweep = 0f;
-                SweepRehitMap();
-            }
-            UpdateRing();
-        }
-
-        private void OnTriggerEnter2D(Collider2D other)
-        {
-            Debug.Log("OnTriggerEnter2D: " + other.name);
             if (!ShouldReactTo(other)) return;
             TryAffect(other);
         }
 
-        /*private void OnTriggerStay2D(Collider2D other)
-        {
-            Debug.Log("OnTriggerStay2D");
-            if (!ShouldReactTo(other)) return;
-
-            // Respect re-hit cooldown to avoid excessive calls/forces
-            if (rehitCooldown <= 0f)
-            {
-                TryAffect(other);
-                return;
-            }
-
-            if (!_lastHitTime.TryGetValue(other, out var last) || (Time.time - last) >= rehitCooldown)
-            {
-                TryAffect(other);
-            }
-        }*/
-
-        private bool ShouldReactTo(Collider2D other)
+        bool ShouldReactTo(Collider2D other)
         {
             if (other == null || other == _circle) return false;
-
-            // Layer mask
             if (((1 << other.gameObject.layer) & targetLayers) == 0) return false;
-
-            // Trigger policy
             if (!reactToTriggers && other.isTrigger) return false;
-
-            // Ignore self / same root if desired (optional; commented out)
-            // if (other.transform.root == transform.root) return false;
-
             return true;
         }
 
-        private void TryAffect(Collider2D other)
+        void TryAffect(Collider2D other)
         {
             _lastHitTime[other] = Time.time;
 
-            /// UnityEvent for designer-friendly hooks
-            //onTouch?.Invoke(other);
+            onTouch?.Invoke(other);
 
-            // Interface hook for code-based custom effects
-            var custom = other.GetComponent<IExpandingCircleAffectable>();
-            custom?.OnTouchedByCircle(this, other);
+            var unit = other.GetComponent<Unit>();
+            if (unit != null && _damagePerHit > 0f)
+            {
+                unit.TakeDamage((int)_damagePerHit);
+            }
 
-            Unit otherUnit = other.GetComponent<Unit>();
-            otherUnit.TakeDamage(5);
-            
-            // Built-in simple effects
             switch (effectMode)
             {
-                case EffectMode.Push:
-                    ApplyDirectionalForce(other, push: true);
-                    break;
-                case EffectMode.Pull:
-                    ApplyDirectionalForce(other, push: false);
-                    break;
-                case EffectMode.None:
-                default:
-                    break;
+                case EffectMode.Push: ApplyDirectionalForce(other, true);  break;
+                case EffectMode.Pull: ApplyDirectionalForce(other, false); break;
             }
         }
 
-        private void ApplyDirectionalForce(Collider2D other, bool push)
+        void ApplyDirectionalForce(Collider2D other, bool push)
         {
-            // Prefer Rigidbody2D for proper physics
             if (other.attachedRigidbody != null && other.attachedRigidbody.bodyType != RigidbodyType2D.Static)
             {
                 Vector2 dir = ((Vector2)other.bounds.center - (Vector2)transform.position);
-                if (dir.sqrMagnitude < 0.0001f) dir = Random.insideUnitCircle.normalized; // avoid NaN
+                if (dir.sqrMagnitude < 0.0001f) dir = Random.insideUnitCircle.normalized;
                 dir = dir.normalized * (push ? 1f : -1f);
-
                 other.attachedRigidbody.AddForce(dir * effectStrength, forceMode);
             }
             else
             {
-                // Fallback: nudge transform directly (non-physical)
                 Vector2 dir = ((Vector2)other.bounds.center - (Vector2)transform.position).normalized;
                 if (!push) dir = -dir;
                 other.transform.position += (Vector3)(dir * effectStrength * Time.deltaTime);
             }
         }
 
-        private void SweepRehitMap()
+        void SweepRehitMap()
         {
-            // Remove entries we haven’t touched for a while (5x cooldown window)
             if (_lastHitTime.Count == 0) return;
-            float threshold = Time.time - Mathf.Max(0.5f, rehitCooldown * 5f);
-
-            // Avoid allocation by reusing a list if you like; fine for now.
+            float threshold = Time.time - Mathf.Max(0.5f, _rehitCooldown * 5f);
             var toRemove = new List<Collider2D>();
             foreach (var kvp in _lastHitTime)
-            {
                 if (kvp.Value < threshold) toRemove.Add(kvp.Key);
-            }
-
             foreach (var c in toRemove) _lastHitTime.Remove(c);
         }
 
 #if UNITY_EDITOR
-        private void OnDrawGizmosSelected()
+        void OnDrawGizmosSelected()
         {
-            // Draw current (or intended) radius
-            float r = _circle != null ? _circle.radius : startRadius;
+            if (_circle == null) _circle = GetComponent<CircleCollider2D>();
+            float r = _circle != null ? _circle.radius : _startRadius;
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(transform.position, r);
 
-            if (maxRadius > 0f)
+            if (_maxRadius > 0f)
             {
                 Gizmos.color = new Color(0f, 1f, 1f, 0.25f);
-                Gizmos.DrawWireSphere(transform.position, maxRadius);
+                Gizmos.DrawWireSphere(transform.position, _maxRadius);
             }
         }
 #endif

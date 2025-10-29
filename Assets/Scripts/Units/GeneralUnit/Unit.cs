@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using Battlefield;
+using Battlefield.Combat.StatusEffectManagement;
 using Battlefield.GameMechanics.Combat.AbilityModifying;
+using Battlefield.GameMechanics.Combat.BuffManagement;
 using Units.Abilities.AbilityManagement;
+using Units.Anvil.AnvilAbilities;
 using Units.Death;
-using Units.GeneralUnit.DeathManagement;
 using Units.HealthDisplay;
 using Units.Resources;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Units
 {
@@ -21,8 +22,7 @@ namespace Units
         private BattlefieldInterfaceForUnit _battlefieldInterfaceForUnit;
 
         private AbilityManager _abilityManager;
-
-        private Transform _unitTransform;
+        
 
         private IHealthDisplayer _healthDisplayer;
         
@@ -33,13 +33,13 @@ namespace Units
         private IEventBus _eventBus;
         
         private IDeathEventCreator _deathEventCreator;
-
+        
+        private StatusEffectManager  _statusEffectManager;
         public void Init(int health,
-            AbilityModifierSet abilityModifierSet,
+            AbilityModifier abilityModifier,
             Faction faction,
             BattlefieldInterfaceForUnit battlefieldInterfaceForUnit,
             AbilityManager abilityManager,
-            Transform unitTransform,
             IHealthDisplayer healthDisplayer,
             UnitResourceManager unitResourceManager,
             TriggerManager triggerManager,
@@ -50,7 +50,6 @@ namespace Units
             _abilityManager = abilityManager;
             _battlefieldInterfaceForUnit = battlefieldInterfaceForUnit;
             this.faction = faction;
-            _unitTransform = unitTransform;
             _healthDisplayer = healthDisplayer;
             _unitResourceManager = unitResourceManager;
             _triggerManager = triggerManager;
@@ -60,7 +59,8 @@ namespace Units
             _healthTracker.OnDied += HandleDeath;
             _deathEventCreator  = deathEventCreator;
             
-            _abilityManager.Init(abilityModifierSet);
+            _abilityManager.Init(abilityModifier);
+            _statusEffectManager = new StatusEffectManager(this);
         }
 
 
@@ -76,7 +76,7 @@ namespace Units
             if (_healthTracker.IsDead())
             {
                 
-                _deathEventCreator.PublishDeathEvent(_eventBus);
+                _deathEventCreator.PublishDeathEvent(_eventBus, this);
                 _battlefieldInterfaceForUnit.RegisterDeath(this);
             }
         }
@@ -88,12 +88,34 @@ namespace Units
 
         public Vector3 GetPosition()
         {
-            return _unitTransform.position;
+            return transform.position;
         }
 
-        public void UpdateAbilityModifierSet(AbilityModifierSet abilityModifierSet)
+        public void UpdateAbilityModifier(AbilityModifier abilityModifier)
         {
-            _abilityManager.RefreshAbilityModifierSet(abilityModifierSet);
+            _abilityManager.RefreshAbilityModifier(abilityModifier);
+        }
+
+        public void ReceiveStatusEffect(IStatusEffect statusEffect)
+        {
+            Debug.Log("Received status effect");
+            _statusEffectManager.AddStatusEffect(statusEffect);
+            statusEffect.ApplyStatusEffect(this);
+        }
+
+        public void AddTrigger(ITrigger trigger)
+        {
+            _triggerManager.Add(trigger);
+        }
+
+        public void RemoveTrigger(ITrigger trigger)
+        {
+            _triggerManager.Remove(trigger);
+        }
+
+        public bool HasStatusEffect(StatusEffectId statusEffectId)
+        {
+            return _statusEffectManager.HasStatusEffect(statusEffectId);
         }
     }
 }

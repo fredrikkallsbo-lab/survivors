@@ -1,4 +1,6 @@
-﻿using Battlefield.GameMechanics.Combat.AbilityModifying;
+﻿using System.Collections.Generic;
+using Battlefield.GameEvents;
+using Battlefield.GameMechanics.Combat.AbilityModifying;
 using Units;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,22 +11,36 @@ namespace Battlefield.GameMechanics
     {
         private int _experience;
         private Unit _playerUnit;
+        private int experiencePerLevel = 10;
+        private IEventBus _eventBus;
 
-        public Wanderer(Unit playerUnit)
+        public Wanderer(Unit playerUnit, IEventBus eventBus)
         {
             _playerUnit = playerUnit;
+            _eventBus = eventBus;
         }
         
         
         public void AddExperience(int i)
         {
+            Debug.Log($"Adding experience {i}");
             _experience += i;
-            _playerUnit.UpdateAbilityModifierSet(CreateAbilityModifierSet());
+            CheckLevelup();
+            _playerUnit.UpdateAbilityModifier(CreateAbilityModifier());
         }
 
-        public AbilityModifierSet CreateAbilityModifierSet()
+        private void CheckLevelup()
         {
-            return new AbilityModifierSet(_experience);
+            if (_experience % experiencePerLevel == 0)
+            {
+                Debug.Log("Publishing level up event");
+                _eventBus.Publish(new PlayerLevelUpEvent());
+            }
+        }
+
+        public AbilityModifier CreateAbilityModifier()
+        {
+            return new AbilityModifier(_experience);
         }
     }
 }

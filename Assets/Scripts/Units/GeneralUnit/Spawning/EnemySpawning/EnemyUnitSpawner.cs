@@ -6,6 +6,7 @@ using Units.Abilities;
 using Units.Abilities.AbilityManagement;
 using Units.Abilities.AbilityManagement.AbilityGeneral;
 using Units.Death;
+using Units.GeneralUnit.Movement;
 using Units.HealthDisplay;
 using Units.Resources;
 using UnityEngine;
@@ -107,20 +108,29 @@ namespace Battlefield
             var _abilityManager = new AbilityManager(abilites);
 
             UnitResourceManager unitResourceManager = new UnitResourceManager();
-   
+
+            MeleeChase meleeChase = enemyUnit.gameObject.AddComponent<MeleeChase>();
+                     
+            
+            
             enemyUnit.Init(
                 10,
-                new AbilityModifierSet(0),
+                new AbilityModifier(0),
                 Faction.Enemy,
                 _battlefieldInterfaceForUnit,
                 _abilityManager,
-                enemyUnit.transform,
                 new DummyHealthDIsplayer(),
                 unitResourceManager,
                 new TriggerManager(),
                 _eventBus,
                 new EnemyUnitDeathEventCreator()
             );
+            meleeChase.Init(
+                _battlefieldInterfaceForUnit,
+                Faction.Player,
+                1,
+                LayerMask.GetMask("Ally"),
+                1f);   
         }
 
         public static Vector3 RandomPointOnCircleXZ(Vector3 center, float radius)

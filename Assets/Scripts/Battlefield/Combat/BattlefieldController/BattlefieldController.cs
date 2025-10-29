@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using Battlefield.Combat.StatusEffectManagement;
+using Battlefield.GameMechanics;
 using Battlefield.GameMechanics.Combat.loot;
 using Units;
-using Units.Abilities;
 using UnityEngine;
+using Random = System.Random;
 
-namespace Battlefield.GameMechanics.Combat.BattlefieldController
+namespace Battlefield.Combat.BattlefieldController
 {
     public class BattlefieldController: MonoBehaviour
     {
@@ -43,5 +45,26 @@ namespace Battlefield.GameMechanics.Combat.BattlefieldController
             return _eventBus;
         }
 
+        public Unit GetRandomUnit(Faction targetFaction, StatusEffectId statusEffectId)
+        {
+            List<Unit> units = unitTracker.GetUnits();
+            
+            List<Unit> factionUnits = new List<Unit>();
+
+            
+            foreach (var unit in units)
+            {
+                if (unit.faction == targetFaction && !unit.HasStatusEffect(statusEffectId))
+                {
+                    factionUnits.Add(unit);
+                }
+            }
+            if (factionUnits.Count == 0)
+            {
+                return null;
+            }
+            int index = new Random().Next(0, factionUnits.Count);
+            return factionUnits[index];
+        }
     }
 }

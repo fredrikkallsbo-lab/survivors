@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
+using Battlefield.GameEvents;
 
 namespace Units.Death
 {
     public class EnemyUnitDeathEventCreator : IDeathEventCreator
     {
-        public void PublishDeathEvent(IEventBus eventBus)
+        public void PublishDeathEvent(IEventBus eventBus, Unit unit)
         {
-            return;
+            eventBus.Publish(new EnemyUnitDeathEvent(unit));
         }
     }
 }
