@@ -22,8 +22,7 @@ namespace Units
         private BattlefieldInterfaceForUnit _battlefieldInterfaceForUnit;
 
         private AbilityManager _abilityManager;
-
-        private Transform _unitTransform;
+        
 
         private IHealthDisplayer _healthDisplayer;
         
@@ -41,7 +40,6 @@ namespace Units
             Faction faction,
             BattlefieldInterfaceForUnit battlefieldInterfaceForUnit,
             AbilityManager abilityManager,
-            Transform unitTransform,
             IHealthDisplayer healthDisplayer,
             UnitResourceManager unitResourceManager,
             TriggerManager triggerManager,
@@ -52,7 +50,6 @@ namespace Units
             _abilityManager = abilityManager;
             _battlefieldInterfaceForUnit = battlefieldInterfaceForUnit;
             this.faction = faction;
-            _unitTransform = unitTransform;
             _healthDisplayer = healthDisplayer;
             _unitResourceManager = unitResourceManager;
             _triggerManager = triggerManager;
@@ -91,7 +88,7 @@ namespace Units
 
         public Vector3 GetPosition()
         {
-            return _unitTransform.position;
+            return transform.position;
         }
 
         public void UpdateAbilityModifier(AbilityModifier abilityModifier)

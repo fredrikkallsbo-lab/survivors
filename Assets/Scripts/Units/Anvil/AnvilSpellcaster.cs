@@ -61,5 +61,10 @@ namespace Units.Anvil
             if (targetUnit == null) return;
             targetUnit.ReceiveStatusEffect(new StatusEffectFieryRune(targetUnit, _battlefieldController.GetEventBus()));
         }
+
+        public void CastMagmaElemental()
+        {
+            
+        }
     }
 }

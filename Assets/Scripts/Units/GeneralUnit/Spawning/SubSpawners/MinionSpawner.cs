@@ -52,7 +52,6 @@ namespace Units.GeneralUnit.Minion
                 Faction.Player,
                 _battlefieldController.GetBattlefieldUnitInterface(),
                 _abilityManager,
-                minionUnit.transform,
                 new DummyHealthDIsplayer(),
                 unitResourceManager,
                 new TriggerManager(),

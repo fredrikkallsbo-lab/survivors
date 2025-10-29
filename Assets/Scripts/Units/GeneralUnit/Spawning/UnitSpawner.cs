@@ -89,7 +89,6 @@ namespace Units
                 Faction.Player,
                 battlefieldController.GetBattlefieldUnitInterface(),
                 _abilityManager,
-                playerUnit.transform,
                 _playerScreenHealthText,
                 unitResourceManager,
                 triggerManager,

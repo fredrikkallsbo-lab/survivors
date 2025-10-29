@@ -39,7 +39,7 @@ namespace Units.Anvil.AnvilAbilities
             {
                 position       = unit.GetPosition(),
                 parent         = null,               // or a transform to parent under
-                startRadius    = 0f,
+                startRadius    = 0.05f,
                 maxRadius      = 1f,
                 expansionSpeed = 0.4f,               // units/sec
                 initialDelay   = 0.5f,               // wait before expanding
