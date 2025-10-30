@@ -21,7 +21,6 @@ public class Scheduler : MonoBehaviour
     void Awake()
     {
         time = FindObjectOfType<GameTime>();
-        if (!time) Debug.LogError("Scheduler needs a GameTime in the scene.");
     }
 
     public Action Every(double periodSeconds, Action action, bool runImmediately = false)

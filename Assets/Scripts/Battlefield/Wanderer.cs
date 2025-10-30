@@ -23,7 +23,6 @@ namespace Battlefield.GameMechanics
         
         public void AddExperience(int i)
         {
-            Debug.Log($"Adding experience {i}");
             _experience += i;
             CheckLevelup();
             _playerUnit.UpdateAbilityModifier(CreateAbilityModifier());
@@ -33,7 +32,6 @@ namespace Battlefield.GameMechanics
         {
             if (_experience % experiencePerLevel == 0)
             {
-                Debug.Log("Publishing level up event");
                 _eventBus.Publish(new PlayerLevelUpEvent());
             }
         }

@@ -56,7 +56,6 @@ namespace Units.Anvil
 
         public void CastFieryRune()
         {
-            Debug.Log("Casting Fiery rune");
             Unit targetUnit = _battlefieldController.GetRandomUnit(Faction.Enemy, StatusEffectId.FieryRune);
             if (targetUnit == null) return;
             targetUnit.ReceiveStatusEffect(new StatusEffectFieryRune(targetUnit, _battlefieldController.GetEventBus()));

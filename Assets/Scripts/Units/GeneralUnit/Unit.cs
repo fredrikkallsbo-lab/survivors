@@ -56,7 +56,6 @@ namespace Units
             _eventBus = bus;
 
             _battlefieldInterfaceForUnit.RegisterSpawn(this);
-            _healthTracker.OnDied += HandleDeath;
             _deathEventCreator  = deathEventCreator;
             
             _abilityManager.Init(abilityModifier);
@@ -64,18 +63,16 @@ namespace Units
         }
 
 
-        private void HandleDeath() => _battlefieldInterfaceForUnit.RegisterDeath(this);
 
       
 
         public void TakeDamage(int damage)
         {
-            
             _healthTracker.TakeDamage(damage);
+            Debug.Log("Taking damage unit:" + name + ", new health: " + _healthTracker.CurrentHp);
             _healthDisplayer.SetFill(_healthTracker.GetPercentageHealth());
             if (_healthTracker.IsDead())
             {
-                
                 _deathEventCreator.PublishDeathEvent(_eventBus, this);
                 _battlefieldInterfaceForUnit.RegisterDeath(this);
             }
@@ -98,7 +95,6 @@ namespace Units
 
         public void ReceiveStatusEffect(IStatusEffect statusEffect)
         {
-            Debug.Log("Received status effect");
             _statusEffectManager.AddStatusEffect(statusEffect);
             statusEffect.ApplyStatusEffect(this);
         }

@@ -48,7 +48,6 @@ namespace Battlefield
 
             if (closestCollider != null)
             {
-                Debug.Log("Returning Unit"); 
                 return closestCollider.GetComponent<Unit>();
             }
 

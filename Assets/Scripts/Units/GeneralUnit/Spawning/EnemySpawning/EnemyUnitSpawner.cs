@@ -92,7 +92,7 @@ namespace Battlefield
         private void InitEnemy(Unit enemyUnit)
         {
             var singleTargetClosestAbility = new SingleTargetClosestAbility(
-                transform,
+                enemyUnit.transform,
                 Faction.Player,
                 1,
                 _scheduler,

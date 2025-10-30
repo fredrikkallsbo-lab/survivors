@@ -30,7 +30,7 @@ namespace Battlefield.Combat.BattlefieldController
         public void UnregisterUnit(Unit unit)
         {
             unitTracker.Unregister(unit);
-            _rewardFunnel.AddExperience(1);
+//            _rewardFunnel.AddExperience(1);
             Destroy(unit.gameObject);
         }
 

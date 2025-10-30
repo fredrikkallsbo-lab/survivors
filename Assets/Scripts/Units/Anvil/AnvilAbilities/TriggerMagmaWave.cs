@@ -28,7 +28,6 @@ namespace Units.Anvil.AnvilAbilities
             _subscription?.Dispose();
             _subscription = _eventBus.Subscribe<ResourceChanged>(e =>
             {
-                Debug.Log("Enabling magma strike");
                 if (e.ResourceId == ResourceId)
                 {
                     if (e.NewValue >= _lastTriggeredOnStrikeNr + _triggerFrequency)
@@ -48,7 +47,6 @@ namespace Units.Anvil.AnvilAbilities
 
         private void Trigger()
         {
-            Debug.Log("Trigger Magma Wave");
             _anvilSpellcaster.CastMagmaWave();
         }
     }
