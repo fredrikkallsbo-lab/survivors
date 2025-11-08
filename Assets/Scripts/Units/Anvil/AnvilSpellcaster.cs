@@ -5,6 +5,7 @@ using Units.Abilities;
 using Units.Abilities.AbilityManagement;
 using Units.Abilities.AbilityManagement.AbilityGeneral;
 using Units.Anvil.AnvilAbilities;
+using Units.Anvil.AnvilAbilities.Chains;
 using Units.GeneralAbilities;
 using Units.GeneralUnit.Minion;
 using Units.GeneralUnit.Spawning.EnemySpawning;
@@ -36,7 +37,7 @@ namespace Units.Anvil
                 parent         = null,               // or a transform to parent under
                 startRadius    = 0f,
                 maxRadius      = 6f,
-                expansionSpeed = 0.7f,               // units/sec
+                expansionSpeed = 2f,               // units/sec
                 initialDelay   = 0f,               // wait before expanding
                 damagePerHit   = 40f,
                 destroyOnMax   = true,
@@ -90,6 +91,52 @@ namespace Units.Anvil
             float x = center.x + Mathf.Cos(angle) * radius;
             float y = center.y + Mathf.Sin(angle) * radius;
             return new Vector3(x, y, center.z);
+        }
+
+        public void CastChains()
+        {
+            
+            Debug.Log("Casting chains");
+            List<Unit> chainOfUnits = _battlefieldController.GetChainOfUnitsStartingFromRandomUnitInRange(
+                Faction.Enemy,
+                25f,
+                25f,
+                4,
+                StatusEffectId.Chain);
+
+            if (chainOfUnits.Count < 2)
+            {
+                return;
+            }
+            
+            List<StatusEffectChain> chains = new List<StatusEffectChain>();
+            
+            foreach (Unit unit in chainOfUnits)
+            {
+                chains.Add(new StatusEffectChain());
+            }
+            
+            for (int i = 0; i < chains.Count; i++)
+            {
+                if (i == 0)
+                {
+                    chains[0].ConstructChainAnchors(chainOfUnits[i], null, chains[1]);
+                } 
+                else if (i == chains.Count - 1)
+                {
+                    chains[^1].ConstructChainAnchors(chainOfUnits[i], chains[^2], null);
+                }
+                else
+                {
+                    chains[i].ConstructChainAnchors(chainOfUnits[i], chains[i-1], chains[i+1]);
+                } 
+            }
+            
+            for(int i = 0; i < chains.Count; i++)
+            {
+               chainOfUnits[i].ReceiveStatusEffect(chains[i]);
+            }
+            
         }
     }
 }

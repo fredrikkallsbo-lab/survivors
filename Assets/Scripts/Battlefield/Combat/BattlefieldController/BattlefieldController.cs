@@ -69,6 +69,60 @@ namespace Battlefield.Combat.BattlefieldController
             return factionUnits[index];
         }
 
+        public List<Unit> GetChainOfUnitsStartingFromRandomUnitInRange(
+            Faction targetFaction,
+            float castRange, 
+            float chainRange, 
+            int maxUnits,
+            StatusEffectId statusEffectId)
+        {
+            Unit castUnit = GetRandomUnit(targetFaction, statusEffectId);
+            Unit lastUnitFound = castUnit;
+            List<Unit> chainUnits =  new List<Unit>();
+            chainUnits.Add(castUnit);
+
+            while (chainUnits.Count < maxUnits && lastUnitFound != null)
+            {
+                lastUnitFound = FindNearbyEnemyToUnitThatHasNotBeenFound(lastUnitFound, chainUnits, chainRange, statusEffectId);
+                if (lastUnitFound != null)
+                {
+                    chainUnits.Add(lastUnitFound);
+                }
+                
+            }
+            return chainUnits;
+        }
+
+        private Unit FindNearbyEnemyToUnitThatHasNotBeenFound(
+            Unit sourceUnit, 
+            List<Unit> previouslyFoundUnits,
+            float distance,
+            StatusEffectId statusEffectId)
+        {
+            foreach (Unit unit in unitTracker.GetUnits())
+            {
+                if (unit == null || unit == sourceUnit)
+                    continue;
+                
+                if (previouslyFoundUnits.Contains(unit))
+                    continue;
+                
+                if(unit.faction != Faction.Enemy) 
+                    continue;
+
+                if (unit.HasStatusEffect(statusEffectId))
+                    continue;
+                float dist = Vector3.Distance(sourceUnit.transform.position, unit.transform.position);
+                if (dist <= distance)
+                {
+                    return unit; 
+                }
+            }
+            return null;
+        }
+        
+        
+        
         public GeneralSpawner GetGeneralSpawner()
         {
             return _generalSpawner;

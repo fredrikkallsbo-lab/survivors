@@ -5,6 +5,7 @@ using Battlefield.GameMechanics.Combat.AbilityModifying;
 using Battlefield.GameMechanics.Combat.BuffManagement;
 using Units.Abilities.AbilityManagement;
 using Units.Anvil.AnvilAbilities;
+using Units.Anvil.AnvilAbilities.Chains;
 using Units.Death;
 using Units.HealthDisplay;
 using Units.Resources;
@@ -74,6 +75,7 @@ namespace Units
             if (_healthTracker.IsDead())
             {
                 _deathEventCreator.PublishDeathEvent(_eventBus, this);
+                _statusEffectManager.UnitDeath();
                 _battlefieldInterfaceForUnit.RegisterDeath(this);
             }
         }
@@ -112,6 +114,11 @@ namespace Units
         public bool HasStatusEffect(StatusEffectId statusEffectId)
         {
             return _statusEffectManager.HasStatusEffect(statusEffectId);
+        }
+
+        public void RemoveStatusEffect(StatusEffectChain statusEffectChain)
+        {
+            _statusEffectManager.RemoveStatusEffect(statusEffectChain);
         }
     }
 }

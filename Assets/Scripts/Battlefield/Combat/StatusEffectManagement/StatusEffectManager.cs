@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Battlefield.Combat.StatusEffectManagement;
 using Units;
+using Units.Anvil.AnvilAbilities.Chains;
 
 namespace Battlefield.GameMechanics.Combat.BuffManagement
 {
@@ -31,6 +32,20 @@ namespace Battlefield.GameMechanics.Combat.BuffManagement
                 }
             }
             return false;
+        }
+
+        public void RemoveStatusEffect(StatusEffectChain statusEffectChain)
+        {
+            _statusEffects.Remove(statusEffectChain);
+            statusEffectChain.RemoveStatusEffect();
+        }
+
+        public void UnitDeath()
+        {
+            foreach (IStatusEffect statusEffect in _statusEffects)
+            {
+                statusEffect.RemoveStatusEffect();
+            }
         }
     }
 }

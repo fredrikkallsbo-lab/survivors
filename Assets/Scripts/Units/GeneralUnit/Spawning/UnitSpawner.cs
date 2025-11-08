@@ -9,6 +9,7 @@ using Units.Abilities.AbilityManagement;
 using Units.Abilities.AbilityManagement.AbilityGeneral;
 using Units.Anvil;
 using Units.Anvil.AnvilAbilities;
+using Units.Anvil.AnvilAbilities.Chains;
 using Units.Anvil.AnvilAbilities.MagmaElemental;
 using Units.Anvil.AnvilAbilities.MagmaWave;
 using Units.Death;
@@ -86,11 +87,19 @@ namespace Units
                 battlefieldController.GetEventBus());
             Ability magmaElemental = new Ability(effectmagmaElemental);
             
+            
+            AbilityEffectChains effectChains = new AbilityEffectChains(
+                spellcaster,
+                triggerManager,
+                battlefieldController.GetEventBus());
+            Ability chains = new Ability(effectChains);
+            
             abilities.Add(anvilStrikeAbility);
             abilities.Add(magmaWave);
             abilities.Add(fieryRune);
             abilities.Add(magmaElemental);
-
+            abilities.Add(chains);
+            
             var _abilityManager = new AbilityManager(abilities);
             var _wanderer = new Wanderer(playerUnit, battlefieldController.GetEventBus());
 

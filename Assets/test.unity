@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c51b99f32f84730a8446df1ffc0850f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _battlefieldController: {fileID: 991100471}
+  battlefieldController: {fileID: 991100471}
 --- !u!4 &100940156
 Transform:
   m_ObjectHideFlags: 0
@@ -487,6 +487,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitTracker: {fileID: 991100470}
+  _generalSpawner: {fileID: 100940155}
 --- !u!114 &991100472
 MonoBehaviour:
   m_ObjectHideFlags: 0
