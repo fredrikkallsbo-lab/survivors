@@ -9,6 +9,7 @@ using Units.Abilities.AbilityManagement;
 using Units.Abilities.AbilityManagement.AbilityGeneral;
 using Units.Anvil;
 using Units.Anvil.AnvilAbilities;
+using Units.Anvil.AnvilAbilities.MagmaElemental;
 using Units.Anvil.AnvilAbilities.MagmaWave;
 using Units.Death;
 using Units.GeneralAbilities;
@@ -52,17 +53,17 @@ namespace Units
             List<Ability> abilities = new List<Ability>();
 
 
-            // DO NOT instantiate the circle here
             GameObject go = new GameObject("AnvilSpellcaster", typeof(AnvilSpellcaster));
             go.transform.position = playerUnit.transform.position;
-
-            // pass the PREFAB to the spellcaster
+            
             var spellcaster = go.GetComponent<AnvilSpellcaster>();
             Debug.Assert(expandingCirclePrefab != null,
                 "UnitSpawner: expandingCirclePrefab is not assigned in Inspector.");
             spellcaster.Init(expandingCirclePrefab, battlefieldController);
 
-            // build your ability using this spellcaster    
+            
+            
+            
             AbilityEffectMagmaWave effectMagmaWave = new AbilityEffectMagmaWave(
                 triggerManager,
                 battlefieldController.GetEventBus(),
@@ -70,15 +71,25 @@ namespace Units
             );
             Ability magmaWave = new Ability(effectMagmaWave);
 
+            
+            
             AbilityEffectFieryRune effectFieryRune = new AbilityEffectFieryRune(
                 spellcaster,
                 triggerManager,
                 battlefieldController.GetEventBus());
             Ability fieryRune = new Ability(effectFieryRune);
             
+            
+            AbilityEffectMagmaElemental effectmagmaElemental = new AbilityEffectMagmaElemental(
+                spellcaster,
+                triggerManager,
+                battlefieldController.GetEventBus());
+            Ability magmaElemental = new Ability(effectmagmaElemental);
+            
             abilities.Add(anvilStrikeAbility);
             abilities.Add(magmaWave);
             abilities.Add(fieryRune);
+            abilities.Add(magmaElemental);
 
             var _abilityManager = new AbilityManager(abilities);
             var _wanderer = new Wanderer(playerUnit, battlefieldController.GetEventBus());

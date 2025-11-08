@@ -3,6 +3,7 @@ using Battlefield.Combat.StatusEffectManagement;
 using Battlefield.GameMechanics;
 using Battlefield.GameMechanics.Combat.loot;
 using Units;
+using Units.GeneralUnit.Spawning.EnemySpawning;
 using UnityEngine;
 using Random = System.Random;
 
@@ -15,6 +16,7 @@ namespace Battlefield.Combat.BattlefieldController
         private BattlefieldInterfaceForUnit _battlefieldInterfaceForUnit;
         private readonly IEventBus  _eventBus = new EventBus();
         private RewardFunnel _rewardFunnel;
+        [SerializeField] GeneralSpawner _generalSpawner;
 
 
         public void RegisterWanderer(Wanderer wanderer)
@@ -65,6 +67,11 @@ namespace Battlefield.Combat.BattlefieldController
             }
             int index = new Random().Next(0, factionUnits.Count);
             return factionUnits[index];
+        }
+
+        public GeneralSpawner GetGeneralSpawner()
+        {
+            return _generalSpawner;
         }
     }
 }

@@ -1,10 +1,16 @@
-﻿using Battlefield.Combat.BattlefieldController;
+﻿using System.Collections.Generic;
+using Battlefield.Combat.BattlefieldController;
 using Battlefield.Combat.StatusEffectManagement;
 using Units.Abilities;
+using Units.Abilities.AbilityManagement;
+using Units.Abilities.AbilityManagement.AbilityGeneral;
 using Units.Anvil.AnvilAbilities;
 using Units.GeneralAbilities;
+using Units.GeneralUnit.Minion;
+using Units.GeneralUnit.Spawning.EnemySpawning;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Units.Anvil
 {
@@ -12,11 +18,13 @@ namespace Units.Anvil
     {
         private ExpandingCircle _expandingCirclePrefab;
         private BattlefieldController  _battlefieldController;
+        private GeneralSpawner generalSpawner;
 
         public void Init(ExpandingCircle prefab, BattlefieldController battlefieldController)
         {
             _expandingCirclePrefab = prefab;
             _battlefieldController = battlefieldController;
+            generalSpawner = _battlefieldController.GetGeneralSpawner();
         }
 
         public void CastMagmaWave()
@@ -63,7 +71,25 @@ namespace Units.Anvil
 
         public void CastMagmaElemental()
         {
+            Vector2 pos = RandomPointOnCircleXZ(transform.position, 2);
+            List<Ability> abilities = new List<Ability>();
             
+            generalSpawner.SpawnUnit(
+                pos,
+                "Sprites/Random/MagmaElemental",
+                "Player",
+                "MagmaElemental",
+                new AbilityManager(abilities),
+                Faction.Player
+            );
+        }
+        
+        public static Vector3 RandomPointOnCircleXZ(Vector3 center, float radius)
+        {
+            float angle = Random.Range(0f, Mathf.PI * 2f);
+            float x = center.x + Mathf.Cos(angle) * radius;
+            float y = center.y + Mathf.Sin(angle) * radius;
+            return new Vector3(x, y, center.z);
         }
     }
 }
