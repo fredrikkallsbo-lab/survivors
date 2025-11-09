@@ -9,11 +9,13 @@ using Units.Abilities.AbilityManagement;
 using Units.Abilities.AbilityManagement.AbilityGeneral;
 using Units.Anvil;
 using Units.Anvil.AnvilAbilities;
+using Units.Anvil.AnvilAbilities.AnvilStrike;
 using Units.Anvil.AnvilAbilities.Chains;
 using Units.Anvil.AnvilAbilities.MagmaElemental;
 using Units.Anvil.AnvilAbilities.MagmaWave;
 using Units.Death;
 using Units.GeneralAbilities;
+using Units.GeneralAbilities.AbilityManagement.AbilityGeneral;
 using Units.GeneralUnit.Minion;
 using Units.HealthDisplay;
 using Units.Resources;
@@ -33,10 +35,12 @@ namespace Units
         [SerializeField] private ExpandingCircle expandingCirclePrefab;
 
         private PlayerScreenHealthText _playerScreenHealthText;
+
         private void Awake()
         {
-            enemyUnitSpawner.Init(scheduler, battlefieldController.GetBattlefieldUnitInterface(), battlefieldController.GetEventBus());
-            
+            enemyUnitSpawner.Init(scheduler, battlefieldController.GetBattlefieldUnitInterface(),
+                battlefieldController.GetEventBus());
+
             _playerScreenHealthText = FindObjectOfType<PlayerScreenHealthText>();
             GameObject player = Instantiate(playerUnitPrefab, new Vector3(0, 0, 0), Quaternion.identity);
             Unit playerUnit = player.AddComponent<Unit>();
@@ -47,59 +51,54 @@ namespace Units
         {
             UnitResourceManager unitResourceManager = new UnitResourceManager();
             TriggerManager triggerManager = new TriggerManager();
-            AbilityEffectAnvilStrike effectAnvilStrike = new AbilityEffectAnvilStrike(scheduler,
+
+            AbilityAnvilStrike abilityAnvilStrike = new AbilityAnvilStrike(scheduler,
                 unitResourceManager.GetUnitResourceInterface(),
                 battlefieldController.GetEventBus());
-            Ability anvilStrikeAbility = new Ability(effectAnvilStrike);
-            List<Ability> abilities = new List<Ability>();
+
+            List<IAbility> abilities = new List<IAbility>();
 
 
             GameObject go = new GameObject("AnvilSpellcaster", typeof(AnvilSpellcaster));
             go.transform.position = playerUnit.transform.position;
-            
+
             var spellcaster = go.GetComponent<AnvilSpellcaster>();
             Debug.Assert(expandingCirclePrefab != null,
                 "UnitSpawner: expandingCirclePrefab is not assigned in Inspector.");
             spellcaster.Init(expandingCirclePrefab, battlefieldController);
 
-            
-            
-            
-            AbilityEffectMagmaWave effectMagmaWave = new AbilityEffectMagmaWave(
-                triggerManager,
-                battlefieldController.GetEventBus(),
-                spellcaster
-            );
-            Ability magmaWave = new Ability(effectMagmaWave);
 
-            
-            
+            IAbility magmaWave = new AbilityMagmaWave(triggerManager,
+                battlefieldController.GetEventBus(),
+                spellcaster);
+
+
             AbilityEffectFieryRune effectFieryRune = new AbilityEffectFieryRune(
                 spellcaster,
                 triggerManager,
                 battlefieldController.GetEventBus());
-            Ability fieryRune = new Ability(effectFieryRune);
-            
-            
+            //IAbility fieryRune = new IAbility(effectFieryRune, AbilityId.FieryRune);
+
+
             AbilityEffectMagmaElemental effectmagmaElemental = new AbilityEffectMagmaElemental(
                 spellcaster,
                 triggerManager,
                 battlefieldController.GetEventBus());
-            Ability magmaElemental = new Ability(effectmagmaElemental);
-            
-            
+            //IAbility magmaElemental = new IAbility(effectmagmaElemental,  AbilityId.MagmaElemental);
+
+
             AbilityEffectChains effectChains = new AbilityEffectChains(
                 spellcaster,
                 triggerManager,
                 battlefieldController.GetEventBus());
-            Ability chains = new Ability(effectChains);
-            
-            abilities.Add(anvilStrikeAbility);
+            //IAbility chains = new IAbility(effectChains, AbilityId.MoltenChains);
+
+            abilities.Add(abilityAnvilStrike);
             abilities.Add(magmaWave);
-            abilities.Add(fieryRune);
-            abilities.Add(magmaElemental);
-            abilities.Add(chains);
-            
+            // abilities.Add(fieryRune);
+            // abilities.Add(magmaElemental);
+            //abilities.Add(chains);
+
             var _abilityManager = new AbilityManager(abilities);
             var _wanderer = new Wanderer(playerUnit, battlefieldController.GetEventBus());
 
@@ -114,7 +113,7 @@ namespace Units
                 triggerManager,
                 battlefieldController.GetEventBus(),
                 new PlayerDeathEventCreator()
-                );
+            );
             battlefieldController.GetBattlefieldUnitInterface().RegisterWanderer(_wanderer);
         }
     }

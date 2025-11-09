@@ -7,6 +7,7 @@ using Units.Abilities;
 using Units.Abilities.AbilityManagement;
 using Units.Abilities.AbilityManagement.AbilityGeneral;
 using Units.Death;
+using Units.GeneralAbilities.AbilityManagement.AbilityGeneral;
 using Units.HealthDisplay;
 using Units.Resources;
 using UnityEngine;
@@ -40,11 +41,13 @@ namespace Units.GeneralUnit.Minion
                 _battlefieldController.GetBattlefieldUnitInterface());
 
             UnitResourceManager unitResourceManager = new UnitResourceManager();
-            var singleTargetAbility = new Ability(singleTargetProjectileAbility);
-            List<Ability> abilites = new List<Ability>();
-            abilites.Add(singleTargetAbility);
+           // var singleTargetAbility = new IAbility(singleTargetProjectileAbility, AbilityId.SingleTargetAttackAbility);
+            //List<IAbility> abilites = new List<IAbility>();
+            //abilites.Add(singleTargetAbility);
             
-            var _abilityManager = new AbilityManager(abilites);
+            //var _abilityManager = new AbilityManager(abilites);
+            var _abilityManager = new AbilityManager(new List<IAbility>());
+            
             
             minionUnit.Init(
                 10,

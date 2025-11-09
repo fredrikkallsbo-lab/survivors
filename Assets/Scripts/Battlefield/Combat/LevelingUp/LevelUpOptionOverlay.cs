@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Battlefield.Combat.BattlefieldController;
 using Battlefield.GameEvents;
+using Units.Abilities.AbilityManagement.AbilityUpgrades;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
@@ -83,10 +84,12 @@ namespace Units.GeneralUnit.Minion
             fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
             fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
+            List<IAbilityUpgrade> upgrades = battlefieldController.GetWanderer().GetAbilityLevelUpOptions(count);
             // Spawn cards
             for (int i = 0; i < count; i++)
             {
-                var btnGO = MakeCard($"Option_{i + 1}");
+                
+                GameObject btnGO = MakeCard(upgrades[i].GetUpgradeString());
                 btnGO.transform.SetParent(container.transform, false);
 
                 // Set click behavior
@@ -95,6 +98,7 @@ namespace Units.GeneralUnit.Minion
                 button.onClick.AddListener(() =>
                 {
                     Debug.Log($"[LevelUpOptionOverlay] Clicked card #{capturedIndex + 1}");
+                    battlefieldController.GetWanderer().AddUpgrade(upgrades[capturedIndex]);
                     if (closeOnClick) Hide();
                 });
             }

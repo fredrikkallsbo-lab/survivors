@@ -4,6 +4,8 @@ using Units.GeneralAbilities.AbilityManagement.AbilityGeneral;
 
 namespace Units.Anvil.AnvilAbilities.Chains
 {
+    
+    
     public class AbilityEffectChains : IAbilityEffect
     {
         
@@ -12,7 +14,7 @@ namespace Units.Anvil.AnvilAbilities.Chains
         private IEventBus _eventBus;
         private ITrigger _trigger;
 
-        public AbilityEffectChains( AnvilSpellcaster anvilSpellcaster, TriggerManager triggerManager, IEventBus eventBus)
+        public AbilityEffectChains(AnvilSpellcaster anvilSpellcaster, TriggerManager triggerManager, IEventBus eventBus)
         {
             _triggerManager = triggerManager;
             _anvilSpellcaster = anvilSpellcaster;

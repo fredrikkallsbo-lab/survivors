@@ -70,7 +70,6 @@ namespace Units
         public void TakeDamage(int damage)
         {
             _healthTracker.TakeDamage(damage);
-            Debug.Log("Taking damage unit:" + name + ", new health: " + _healthTracker.CurrentHp);
             _healthDisplayer.SetFill(_healthTracker.GetPercentageHealth());
             if (_healthTracker.IsDead())
             {
@@ -119,6 +118,11 @@ namespace Units
         public void RemoveStatusEffect(StatusEffectChain statusEffectChain)
         {
             _statusEffectManager.RemoveStatusEffect(statusEffectChain);
+        }
+
+        public AbilityManager GetAbilityManager()
+        {
+            return _abilityManager;
         }
     }
 }

@@ -17,10 +17,12 @@ namespace Battlefield.Combat.BattlefieldController
         private readonly IEventBus  _eventBus = new EventBus();
         private RewardFunnel _rewardFunnel;
         [SerializeField] GeneralSpawner _generalSpawner;
-
-
+        private Wanderer _wanderer;
+        
+        
         public void RegisterWanderer(Wanderer wanderer)
         {
+            _wanderer = wanderer;
             _rewardFunnel = new RewardFunnel(wanderer);
         }
 
@@ -32,7 +34,7 @@ namespace Battlefield.Combat.BattlefieldController
         public void UnregisterUnit(Unit unit)
         {
             unitTracker.Unregister(unit);
-//            _rewardFunnel.AddExperience(1);
+            _rewardFunnel.AddExperience(1);
             Destroy(unit.gameObject);
         }
 
@@ -120,8 +122,11 @@ namespace Battlefield.Combat.BattlefieldController
             }
             return null;
         }
-        
-        
+
+        public Wanderer GetWanderer()
+        {
+            return _wanderer;
+        }
         
         public GeneralSpawner GetGeneralSpawner()
         {

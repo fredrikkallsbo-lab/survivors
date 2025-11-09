@@ -28,18 +28,33 @@ namespace Units.Anvil
             generalSpawner = _battlefieldController.GetGeneralSpawner();
         }
 
-        public void CastMagmaWave()
+        
+        /*
+         * Uppgraderingar:
+         *      +radius
+         *      +/- speed
+         *      +damage
+         *      frequency
+         *      Unika förmågor? chans att applicera fiery rune?
+         *      en svagare version som åker tillbaka
+         */
+        public void CastMagmaWave(
+            float maxRadius, 
+            float expansionSpeed, 
+            int damage
+            )
         {
     
+            Debug.Log("Casting magma Wave, maxRadius: " + maxRadius + ", expansionSpeed: " +  expansionSpeed + ", damage: " + damage);
             var p = new ExpandingCircle.Params
             {
                 position       = transform.position,
                 parent         = null,               // or a transform to parent under
                 startRadius    = 0f,
-                maxRadius      = 6f,
-                expansionSpeed = 2f,               // units/sec
+                maxRadius      = maxRadius,
+                expansionSpeed = expansionSpeed,               // units/sec
                 initialDelay   = 0f,               // wait before expanding
-                damagePerHit   = 40f,
+                damagePerHit   = damage,
                 destroyOnMax   = true,
                 stopAtMax      = true,
 
@@ -57,12 +72,17 @@ namespace Units.Anvil
                 reactToTriggers = true
             };
             var circle = ExpandingCircle.Spawn(p);
-
-           // Vector3 pos = transform.position;   // << from caster/player, not mouse
-            //Instantiate(_expandingCirclePrefab, pos, Quaternion.identity);
-            
         }
 
+        /*
+         * Uppgraderingar:
+         *      duration?
+         *      damage
+         *      explosions area
+         *      + %chans att påverka extra target
+         *      
+         */
+        
         public void CastFieryRune()
         {
             Unit targetUnit = _battlefieldController.GetRandomUnit(Faction.Enemy, StatusEffectId.FieryRune);
@@ -70,10 +90,21 @@ namespace Units.Anvil
             targetUnit.ReceiveStatusEffect(new StatusEffectFieryRune(targetUnit, _battlefieldController.GetEventBus()));
         }
 
+        /*
+         * Uppgraderingar:
+         *      + max units
+         *      + duration?
+         *      + damage
+         *      + hp
+         *      + movement speed
+         *      + unika buffs på elemental? RF? damage conversion? splash attack?
+         *      + frequency
+         */
+        
         public void CastMagmaElemental()
         {
             Vector2 pos = RandomPointOnCircleXZ(transform.position, 2);
-            List<Ability> abilities = new List<Ability>();
+            List<IAbility> abilities = new List<IAbility>();
             
             generalSpawner.SpawnUnit(
                 pos,
@@ -93,6 +124,17 @@ namespace Units.Anvil
             return new Vector3(x, y, center.z);
         }
 
+        
+        
+        
+        /*
+         * Uppgraderingar:
+         *      +targets
+         *      range
+         *      pull strength
+         *      frequency of cast
+         *      reverse pull? - borde vara på gear
+         */
         public void CastChains()
         {
             
