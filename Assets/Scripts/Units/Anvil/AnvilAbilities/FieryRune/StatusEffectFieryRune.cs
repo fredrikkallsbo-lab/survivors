@@ -23,7 +23,6 @@ namespace Units.Anvil.AnvilAbilities
 
         public void ApplyStatusEffect(Unit targetUnit)
         {
-            Debug.Log("Applying status effect");
             _targetUnit = targetUnit;
             _fieryRuneVisual = FieryRuneVisual.CreateFromResources(
                 _targetUnit.gameObject,

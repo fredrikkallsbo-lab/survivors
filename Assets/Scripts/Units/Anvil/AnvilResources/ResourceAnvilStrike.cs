@@ -36,7 +36,6 @@ namespace Units.Anvil.AnvilResources
         
         private void PublishChange(ResourceId id, int oldV, int newV)
         {
-            Debug.Log("Publishing new change, new value: " + newV);
             _bus.Publish(new ResourceChanged(id, oldV, newV));
         }
     }

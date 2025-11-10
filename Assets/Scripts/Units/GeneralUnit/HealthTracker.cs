@@ -8,7 +8,6 @@ namespace Units
         public int MaxHp { get; private set; }
         public int CurrentHp { get; private set; }
 
-        public event Action OnDied;
 
         public HealthTracker(int initMaxHp)
         {
@@ -33,7 +32,6 @@ namespace Units
         {
             if (CurrentHp <= 0)
             {
-                OnDied?.Invoke();
                 return true;
             }
 

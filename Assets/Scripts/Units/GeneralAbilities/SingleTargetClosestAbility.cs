@@ -28,7 +28,8 @@ namespace Units.Abilities
         private BattlefieldInterfaceForUnit _battlefieldInterface;
         
         
-        public SingleTargetClosestAbility(Transform sourceTransform, 
+        public SingleTargetClosestAbility(
+            Transform sourceTransform, 
             Faction targetFaction, 
             int baseDamage, 
             Scheduler scheduler,
@@ -68,6 +69,7 @@ namespace Units.Abilities
                 _battlefieldInterface.GetClosestUnitOfFaction(_targetFaction, _sourceTransform, _radius, _layerMask);
             if (targetUnit != null)
             {
+                Debug.Log("Attacking : " + targetUnit.name);
                 targetUnit.TakeDamage(_baseDamage + _abilityModifier.Levels);
             }
         }

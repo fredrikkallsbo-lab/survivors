@@ -1,31 +1,23 @@
-﻿using Battlefield.GameMechanics.Combat.AbilityModifying;
+﻿using System.Collections.Generic;
+using Battlefield.GameMechanics.Combat.AbilityModifying;
+using Units.Abilities.AbilityManagement.AbilityUpgrades;
 using Units.GeneralAbilities.AbilityManagement.AbilityGeneral;
 using Units.Resources;
 
 namespace Units.Abilities.AbilityManagement.AbilityGeneral
 {
-    public class Ability
+    public interface IAbility
     {
-        private IAbilityEffect effect;
 
-        public Ability(IAbilityEffect effect)
-        {
-            this.effect = effect;
-        }
+        public void Init(AbilityModifier abilityModifier);
 
-        public void Init(AbilityModifier abilityModifier)
-        {
-            effect.Init(abilityModifier);
-        }
+        public void RefreshAbilityModifierSet(AbilityModifier abilityModifierSet);
 
-        public void RefreshAbilityModifierSet(AbilityModifier abilityModifierSet)
-        {
-            effect.RefreshAbilityModifier(abilityModifierSet);
-        }
+        public void ManualOnDisable();
 
-        public void ManualOnDisable()
-        {
-            effect.ManualOnDisable();
-        }
+        public AbilityId GetAbilityId();
+
+        public List<IAbilityUpgrade> GetUpgrades(int numberOfUpgrades);
+        
     }
 }

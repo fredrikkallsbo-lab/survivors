@@ -9,31 +9,16 @@ using Units.GeneralUnit.Movement;
 using Units.HealthDisplay;
 using Units.Resources;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Units.GeneralUnit.Spawning.EnemySpawning
 {
     public class GeneralSpawner : MonoBehaviour
     {
 
-        [SerializeField] private BattlefieldController  _battlefieldController;
-
-
-        public void Awake()
-        {
-            Vector2 pos = new Vector2(2f, 2f);
-            List<Ability> abilities = new List<Ability>();
-            
-            SpawnUnit(
-                pos,
-                "Sprites/Random/MagmaElemental",
-                "Player",
-                "MagmaElemental",
-                new AbilityManager(abilities),
-                Faction.Player
-                );
-        }
-
-        private void SpawnUnit(
+        [SerializeField] private BattlefieldController  battlefieldController;
+        
+        public void SpawnUnit(
             Vector2 position, 
             string spritePath, 
             string unityTag,
@@ -51,12 +36,12 @@ namespace Units.GeneralUnit.Spawning.EnemySpawning
                 5,
                 new AbilityModifier(0),
                 faction,
-                _battlefieldController.GetBattlefieldUnitInterface(),
+                battlefieldController.GetBattlefieldUnitInterface(),
                 abilityManager,
                 new DummyHealthDIsplayer(),
                 new UnitResourceManager(),
                 new TriggerManager(),
-                _battlefieldController.GetEventBus(),
+                battlefieldController.GetEventBus(),
                 new EnemyUnitDeathEventCreator()
             );
 
@@ -76,12 +61,12 @@ namespace Units.GeneralUnit.Spawning.EnemySpawning
             
             MeleeChase meleeChase = unitObject.gameObject.AddComponent<MeleeChase>();
             meleeChase.Init(
-                _battlefieldController.GetBattlefieldUnitInterface(),
+                battlefieldController.GetBattlefieldUnitInterface(),
                 Faction.Enemy,
                 1,
                 LayerMask.GetMask("Enemy"),
                 1f);   
-            _battlefieldController.GetBattlefieldUnitInterface().RegisterSpawn(unit);
+            battlefieldController.GetBattlefieldUnitInterface().RegisterSpawn(unit);
         }
         
     }

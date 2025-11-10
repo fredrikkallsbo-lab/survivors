@@ -70,7 +70,6 @@ namespace Units.Abilities
             Unit targetUnit = _battlefieldInterface.GetClosestUnitOfFaction(Faction.Enemy, _sourceTransform, 100, _layerMask);
             if (targetUnit != null)
             {
-                Debug.Log("Projectile attack");
 
                 SendProjectile(targetUnit);
             }

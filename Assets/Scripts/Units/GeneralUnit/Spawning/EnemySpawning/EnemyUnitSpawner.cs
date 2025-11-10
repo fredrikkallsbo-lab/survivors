@@ -6,6 +6,7 @@ using Units.Abilities;
 using Units.Abilities.AbilityManagement;
 using Units.Abilities.AbilityManagement.AbilityGeneral;
 using Units.Death;
+using Units.GeneralAbilities.AbilityManagement.AbilityGeneral;
 using Units.GeneralUnit.Movement;
 using Units.HealthDisplay;
 using Units.Resources;
@@ -92,7 +93,7 @@ namespace Battlefield
         private void InitEnemy(Unit enemyUnit)
         {
             var singleTargetClosestAbility = new SingleTargetClosestAbility(
-                transform,
+                enemyUnit.transform,
                 Faction.Player,
                 1,
                 _scheduler,
@@ -101,9 +102,9 @@ namespace Battlefield
                 _battlefieldInterfaceForUnit);
 
 
-            var singleTargetAbility = new Ability(singleTargetClosestAbility);
-            List<Ability> abilites = new List<Ability>();
-            abilites.Add(singleTargetAbility);
+           // var singleTargetAbility = new IAbility(singleTargetClosestAbility, AbilityId.SingleTargetAttackAbility);
+            List<IAbility> abilites = new List<IAbility>();
+            //abilites.Add(singleTargetAbility);
 
             var _abilityManager = new AbilityManager(abilites);
 

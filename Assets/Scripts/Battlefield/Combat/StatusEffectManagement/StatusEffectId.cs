@@ -2,6 +2,7 @@
 {
     public enum StatusEffectId
     {
-        FieryRune
+        FieryRune,
+        Chain
     }
 }

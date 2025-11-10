@@ -5,6 +5,7 @@ using Battlefield.GameMechanics.Combat.AbilityModifying;
 using Battlefield.GameMechanics.Combat.BuffManagement;
 using Units.Abilities.AbilityManagement;
 using Units.Anvil.AnvilAbilities;
+using Units.Anvil.AnvilAbilities.Chains;
 using Units.Death;
 using Units.HealthDisplay;
 using Units.Resources;
@@ -56,7 +57,6 @@ namespace Units
             _eventBus = bus;
 
             _battlefieldInterfaceForUnit.RegisterSpawn(this);
-            _healthTracker.OnDied += HandleDeath;
             _deathEventCreator  = deathEventCreator;
             
             _abilityManager.Init(abilityModifier);
@@ -64,19 +64,17 @@ namespace Units
         }
 
 
-        private void HandleDeath() => _battlefieldInterfaceForUnit.RegisterDeath(this);
 
       
 
         public void TakeDamage(int damage)
         {
-            
             _healthTracker.TakeDamage(damage);
             _healthDisplayer.SetFill(_healthTracker.GetPercentageHealth());
             if (_healthTracker.IsDead())
             {
-                
                 _deathEventCreator.PublishDeathEvent(_eventBus, this);
+                _statusEffectManager.UnitDeath();
                 _battlefieldInterfaceForUnit.RegisterDeath(this);
             }
         }
@@ -98,7 +96,6 @@ namespace Units
 
         public void ReceiveStatusEffect(IStatusEffect statusEffect)
         {
-            Debug.Log("Received status effect");
             _statusEffectManager.AddStatusEffect(statusEffect);
             statusEffect.ApplyStatusEffect(this);
         }
@@ -116,6 +113,16 @@ namespace Units
         public bool HasStatusEffect(StatusEffectId statusEffectId)
         {
             return _statusEffectManager.HasStatusEffect(statusEffectId);
+        }
+
+        public void RemoveStatusEffect(StatusEffectChain statusEffectChain)
+        {
+            _statusEffectManager.RemoveStatusEffect(statusEffectChain);
+        }
+
+        public AbilityManager GetAbilityManager()
+        {
+            return _abilityManager;
         }
     }
 }

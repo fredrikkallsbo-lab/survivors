@@ -8,7 +8,6 @@ namespace Units.Anvil.AnvilAbilities
         
         public static FieryRuneVisual CreateFromResources(GameObject unitGameObject, string resourcePath, int sortingOrderOffset, float scale)
         {
-           Debug.Log("Creating FieryRuneVisual");
             // resourcePath must be like "Sprites/Random/FieryRune"
             var sprite = UnityEngine.Resources.Load<Sprite>(resourcePath);
             var comp = unitGameObject.GetComponent<FieryRuneVisual>() ?? unitGameObject.AddComponent<FieryRuneVisual>();

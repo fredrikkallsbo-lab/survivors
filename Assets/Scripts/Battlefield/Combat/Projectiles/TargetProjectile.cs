@@ -56,7 +56,6 @@ namespace Units.Abilities
                 else
                 {
                     // Target still alive: trigger the impact logic
-                    Debug.Log("Trigger projectile impact");
                     TriggerProjectileImpact();
                 }
             }

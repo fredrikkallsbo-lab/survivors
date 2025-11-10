@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using Battlefield.GameMechanics.Combat.AbilityModifying;
 using Units.Abilities.AbilityManagement.AbilityGeneral;
+using Units.Abilities.AbilityManagement.AbilityUpgrades;
+using Units.GeneralAbilities.AbilityManagement.AbilityGeneral;
 using Units.Resources;
 
 namespace Units.Abilities.AbilityManagement
 {
     public class AbilityManager
     {
-        private List<Ability> _abilities;
+        private List<IAbility> _abilities;
         
         public void Init(AbilityModifier abilityModifier)
         {
@@ -18,7 +20,7 @@ namespace Units.Abilities.AbilityManagement
             }
         }
         
-        public AbilityManager(List<Ability> abilities)
+        public AbilityManager(List<IAbility> abilities)
         {
             _abilities = abilities;
         }
@@ -37,6 +39,20 @@ namespace Units.Abilities.AbilityManagement
             {
                 ability.ManualOnDisable();
             }
+        }
+
+        public List<IAbilityUpgrade> GetUpgrades(int numberOfUpgrades)
+        {
+            List<IAbilityUpgrade> upgrades = new List<IAbilityUpgrade>();
+
+            foreach (var ability in _abilities)
+            {
+                if (ability.GetAbilityId() == AbilityId.MagmaWave)
+                {
+                    upgrades.AddRange(ability.GetUpgrades(numberOfUpgrades));
+                }
+            }
+            return upgrades;
         }
     }
 }

@@ -1,34 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
-using Units.Abilities;
 using Units.Resources;
 using UnityEngine;
 
-namespace Units.Anvil.AnvilAbilities
+namespace Units.Anvil.AnvilAbilities.Chains
 {
-    public class TriggerMagmaWave: ITrigger
+    public class TriggerChainOnStrike : ITrigger
     {
+
         private int _lastTriggeredOnStrikeNr = 0;
-        private int _triggerFrequency = 5;
-        public readonly ResourceId ResourceId = ResourceId.AnvilStrike;
+        private int _triggerFrequency = 3;
+        private AnvilSpellcaster _anvilSpellcaster;
         
+        public readonly ResourceId ResourceId = ResourceId.AnvilStrike;
         private readonly IEventBus _eventBus;
         IDisposable _subscription;
 
-        private AnvilSpellcaster _anvilSpellcaster;
-        
-        public TriggerMagmaWave(IEventBus eventBus, AnvilSpellcaster anvilSpellcaster)
+
+        public TriggerChainOnStrike(AnvilSpellcaster anvilSpellcaster, IEventBus eventBus)
         {
-            _eventBus = eventBus;
             _anvilSpellcaster = anvilSpellcaster;
+            _eventBus = eventBus;
         }
+        
+        
 
         public void Enable()
         {
-            _subscription?.Dispose();
             _subscription = _eventBus.Subscribe<ResourceChanged>(e =>
             {
-                Debug.Log("Enabling magma strike");
                 if (e.ResourceId == ResourceId)
                 {
                     if (e.NewValue >= _lastTriggeredOnStrikeNr + _triggerFrequency)
@@ -40,16 +40,14 @@ namespace Units.Anvil.AnvilAbilities
             });
         }
 
-        public void Disable()
-        {
-            _subscription?.Dispose();
-            _subscription = null;
-        }
-
         private void Trigger()
         {
-            Debug.Log("Trigger Magma Wave");
-            _anvilSpellcaster.CastMagmaWave();
+            _anvilSpellcaster.CastChains();
+        }
+
+        public void Disable()
+        {
+            _subscription.Dispose();
         }
     }
 }
