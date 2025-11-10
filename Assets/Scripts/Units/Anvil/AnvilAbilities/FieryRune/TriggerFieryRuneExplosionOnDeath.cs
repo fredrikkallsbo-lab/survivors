@@ -43,7 +43,7 @@ namespace Units.Anvil.AnvilAbilities
                 maxRadius      = 1f,
                 expansionSpeed = 0.4f,               // units/sec
                 initialDelay   = 0.5f,               // wait before expanding
-                damagePerHit   = 40f,
+                damagePerHit   = 40,
                 destroyOnMax   = true,
                 stopAtMax      = true,
 

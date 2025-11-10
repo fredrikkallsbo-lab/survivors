@@ -61,7 +61,7 @@ namespace Units.GeneralAbilities
             public float maxRadius;
             public float expansionSpeed;
             public float initialDelay;
-            public float damagePerHit;
+            public int damagePerHit;
             public bool  destroyOnMax;
             public bool  stopAtMax;
 

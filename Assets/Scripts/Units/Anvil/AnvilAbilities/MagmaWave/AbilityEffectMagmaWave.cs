@@ -50,7 +50,6 @@ namespace Units.Anvil.AnvilAbilities.MagmaWave
             float speed = _baseSpeed * packet.SpeedModifier;
             int damage = (int)((_baseDamage + packet.FlatDamage) * packet.IncreaseDamage);
             
-            Debug.Log("Updating values : maxRadius: " + maxRadius + ", speed: " + speed + ", damage: " + damage);
             _triggerMagmaWaveOnStrike.UpdateValues(
                 maxRadius, 
                 speed, 

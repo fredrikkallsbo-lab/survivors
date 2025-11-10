@@ -22,7 +22,7 @@ namespace Units.Anvil.AnvilAbilities.MagmaWave
             float flatBonusRadius = 0f,
             float increaseRadius = 0f,
             float speedModifier = 0f,
-            float flatDamage = 0f,
+            int flatDamage = 0,
             float increaseDamage = 0f,
             int frequency = 0,
             String upgradeString = null)

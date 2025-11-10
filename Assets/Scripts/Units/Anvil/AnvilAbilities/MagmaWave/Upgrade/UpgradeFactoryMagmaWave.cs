@@ -35,23 +35,23 @@ namespace Units.Anvil.AnvilAbilities.MagmaWave.Upgrade
             {
                 case MagmaWaveUpgradeTypes.FlatBonusRadius:
                     return new AbilityUpgradeMagmaWave(flatBonusRadius: 5f, 
-                        upgradeString: "Add +5 to base radius");
+                        upgradeString: "Magma Wave: Add +5 to base radius");
                 case MagmaWaveUpgradeTypes.IncreaseRadius:
                     return new AbilityUpgradeMagmaWave(increaseRadius: 1f, 
-                        upgradeString: "100% increased radius");
+                        upgradeString: "Magma Wave: 100% increased radius");
                 case MagmaWaveUpgradeTypes.LowerSpeed:
                     return new AbilityUpgradeMagmaWave(speedModifier: -0.25f, 
-                        upgradeString: "25% reduced speed");
+                        upgradeString: "Magma Wave: 25% reduced speed");
                 case MagmaWaveUpgradeTypes.FasterSpeedAndFlatDamage:
                     return new AbilityUpgradeMagmaWave(speedModifier: 0.2f, 
                         increaseDamage: 0.5f,
-                        upgradeString: "Wave moves 20% faster and deals 50% increased damage");
+                        upgradeString: "Magma Wave: Wave moves 20% faster and deals 50% increased damage");
                 case MagmaWaveUpgradeTypes.FlatDamage:
                     return new AbilityUpgradeMagmaWave(flatDamage: 1, 
-                        upgradeString: "+1 base damage");
+                        upgradeString: "Magma Wave: +1 base damage");
                 case MagmaWaveUpgradeTypes.IncreaseDamage:
                     return new AbilityUpgradeMagmaWave(increaseDamage: 0.2f, 
-                        upgradeString: "20% increased damage");
+                        upgradeString: "Magma Wave: 20% increased damage");
                 default:
                     throw new ArgumentException("Unnaccounted for upgrade type");
             }
